@@ -1,0 +1,15 @@
+{
+  "files": {
+    "main.css": "/food-time/static/css/main.50cf232f.chunk.css",
+    "main.js": "/food-time/static/js/main.776bd1d3.chunk.js",
+    "main.js.map": "/food-time/static/js/main.776bd1d3.chunk.js.map",
+    "runtime~main.js": "/food-time/static/js/runtime~main.8d9e5b06.js",
+    "runtime~main.js.map": "/food-time/static/js/runtime~main.8d9e5b06.js.map",
+    "static/js/2.a5c2e03b.chunk.js": "/food-time/static/js/2.a5c2e03b.chunk.js",
+    "static/js/2.a5c2e03b.chunk.js.map": "/food-time/static/js/2.a5c2e03b.chunk.js.map",
+    "index.html": "/food-time/index.html",
+    "precache-manifest.2beace5d0940f49442810168ac8005f7.js": "/food-time/precache-manifest.2beace5d0940f49442810168ac8005f7.js",
+    "service-worker.js": "/food-time/service-worker.js",
+    "static/css/main.50cf232f.chunk.css.map": "/food-time/static/css/main.50cf232f.chunk.css.map"
+  }
+}
