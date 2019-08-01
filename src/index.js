@@ -6,7 +6,7 @@ import * as serviceWorker from './serviceWorker';
 
 function getInitialState() {
   try {
-    return Array.from(JSON.parse(window.localStorage.getItem('items')))
+    return Array.from(JSON.parse(window.localStorage.getItem('items-food-time')))
   } catch (e) {
     return []
   }

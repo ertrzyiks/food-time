@@ -69,7 +69,7 @@ function App({initialState}) {
 
   useEffect(
     () => {
-      window.localStorage.setItem('items', JSON.stringify(state));
+      window.localStorage.setItem('items-food-time', JSON.stringify(state));
     },
     [state]
   )
