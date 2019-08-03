@@ -4,15 +4,22 @@ import './index.css';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
 
-function getInitialState() {
-  try {
-    return Array.from(JSON.parse(window.localStorage.getItem('items-food-time')))
-  } catch (e) {
-    return []
-  }
-}
+import ApolloClient from 'apollo-boost'
+import { ApolloProvider } from '@apollo/react-hooks'
 
-ReactDOM.render(<App initialState={getInitialState()}/>, document.getElementById('root'));
+const client = new ApolloClient({
+  uri: process.env.REACT_APP_GRAPHQL_ENDPOINT || 'http://localhost:8080/food-time'
+})
+
+
+ReactDOM.render(
+  (
+    <ApolloProvider client={client}>
+      <App/>
+    </ApolloProvider>
+  ),
+  document.getElementById('root')
+);
 
 // If you want your app to work offline and load faster, you can change
 // unregister() to register() below. Note this comes with some pitfalls.

@@ -1,4 +1,7 @@
-import React, { useReducer, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { gql } from 'apollo-boost'
+import { useQuery, useMutation } from '@apollo/react-hooks'
+
 import Button from '@material-ui/core/Button';
 
 import Typography from '@material-ui/core/Typography';
@@ -63,42 +66,68 @@ function Counter({text, last}) {
   return <span>{text}: {formatElapsedTime(Date.now() - last.now)}</span>;
 }
 
-function App({initialState}) {
-  const [state, dispatch] = useReducer(reducer, initialState)
-  const [toDelete, setToDelete] = useState(null)
+const GET_ENTIRES = gql`
+  query getEntries($spaceId: String!) {
+    entries(spaceId: $spaceId) {
+      id
+      time
+    }
+  }
+`
 
-  useEffect(
-    () => {
-      window.localStorage.setItem('items-food-time', JSON.stringify(state));
-    },
-    [state]
-  )
+const CREATE_ENTRY = gql`
+  mutation CreateEntry($spaceId: String!, $time: Int!) {
+    createEntry(spaceId: $spaceId, time: $time) {
+      id
+    }
+  }
+`
+
+function App({}) {
+  // const [state, dispatch] = useReducer(reducer)
+  // const [toDelete, setToDelete] = useState(null)
+
+  // useEffect(
+  //   () => {
+  //     window.localStorage.setItem('items-food-time', JSON.stringify(state));
+  //   },
+  //   [state]
+  // )
+
+  const { loading, data } = useQuery(GET_ENTIRES, {variables: {spaceId: '1'}})
+
+  const [createEntry] = useMutation(CREATE_ENTRY, {
+    variables: { time: Math.round(Date.now() / 1000), spaceId: '1' },
+    refetchQueries: ['getEntries']
+  })
 
   return (
     <div className="App">
       <header className="App-header">
 
-        <Typography variant="h5" component="p">
-          <Counter text='Since last event' last={state[0]}/>
-        </Typography>
+        { !loading &&
+          <Typography variant="h5" component="p">
+            <Counter text='Since last event' last={0}/>
+          </Typography>
+        }
 
-        <Button variant="contained" size='large' color="primary" onClick={() => dispatch({type: 'tick'})}>
+        <Button variant="contained" size='large' color="primary" onClick={() => createEntry()}>
           Now
         </Button>
       </header>
 
       <Container maxWidth="sm">
         <Paper>
-          { state.length > 0 &&
+          { !loading && data && data.entries.length > 0 &&
           <List>
             <AnimateGroup>
-              {state.map(({now, elapsedTime, id}) =>
+              {data.entries.map(({time, elapsedTime, id}) =>
                 <ListItem key={id}>
-                  <ListItemText primary={formatTime(now)} />
+                  <ListItemText primary={formatTime(time)} />
 
                   { elapsedTime && elapsedTime < 60 * 60 * 1000 &&
                   <ListItemSecondaryAction>
-                    <IconButton edge="end" aria-label="Comments" onClick={() => setToDelete(id)}>
+                    <IconButton edge="end" aria-label="Comments" onClick={() => {}}>
                       <Delete/>
                     </IconButton>
                   </ListItemSecondaryAction>
@@ -109,7 +138,7 @@ function App({initialState}) {
           </List>
           }
 
-          { state.length === 0 &&
+          { !loading && data && data.entries.length === 0 &&
           <List>
             <ListItem>
               <ListItemText primary='Click the button to start measuring intervals' />
@@ -119,20 +148,20 @@ function App({initialState}) {
         </Paper>
       </Container>
 
-      <Dialog
-        open={Boolean(toDelete)}
-        onClose={() => setToDelete(null)}
-      >
-        <DialogTitle id="alert-dialog-title">Are you sure to remove this item?</DialogTitle>
-        <DialogActions>
-          <Button onClick={() => { dispatch({type: 'delete', id: toDelete}); setToDelete(null) } } color="secondary" autoFocus>
-            Delete
-          </Button>
-          <Button onClick={() => setToDelete(null)} color="primary">
-            Keep it
-          </Button>
-        </DialogActions>
-      </Dialog>
+      {/*<Dialog*/}
+        {/*open={Boolean(toDelete)}*/}
+        {/*onClose={() => setToDelete(null)}*/}
+      {/*>*/}
+        {/*<DialogTitle id="alert-dialog-title">Are you sure to remove this item?</DialogTitle>*/}
+        {/*<DialogActions>*/}
+          {/*<Button onClick={() => { dispatch({type: 'delete', id: toDelete}); setToDelete(null) } } color="secondary" autoFocus>*/}
+            {/*Delete*/}
+          {/*</Button>*/}
+          {/*<Button onClick={() => setToDelete(null)} color="primary">*/}
+            {/*Keep it*/}
+          {/*</Button>*/}
+        {/*</DialogActions>*/}
+      {/*</Dialog>*/}
     </div>
   );
 }
