@@ -20,7 +20,7 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "REACT_APP_GRAPHQL_ENDPOINT=http://papi.ertrzyiks.me/food-time react-scripts build",
+    "build": "REACT_APP_GRAPHQL_ENDPOINT=https://papi.ertrzyiks.me/food-time react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "predeploy": "yarn run build",
