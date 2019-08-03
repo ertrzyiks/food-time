@@ -11,11 +11,13 @@ const client = new ApolloClient({
   uri: process.env.REACT_APP_GRAPHQL_ENDPOINT || 'http://localhost:8080/food-time'
 })
 
+const read = (key) => JSON.parse(window.localStorage.getItem(key))
+const write = (key, value) => window.localStorage.setItem(key, JSON.stringify(value))
 
 ReactDOM.render(
   (
     <ApolloProvider client={client}>
-      <App/>
+      <App storage={{read, write}}/>
     </ApolloProvider>
   ),
   document.getElementById('root')
