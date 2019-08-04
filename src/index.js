@@ -2,7 +2,10 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
-import * as serviceWorker from './serviceWorker';
+import * as serviceWorker from './serviceWorker'
+
+import { MuiPickersUtilsProvider } from '@material-ui/pickers'
+import DateFnsUtils from '@date-io/date-fns'
 
 import { ApolloClient } from 'apollo-client'
 import { createHttpLink } from "apollo-link-http"
@@ -25,9 +28,11 @@ const write = (key, value) => window.localStorage.setItem(key, JSON.stringify(va
 
 ReactDOM.render(
   (
-    <ApolloProvider client={client}>
-      <App storage={{read, write}}/>
-    </ApolloProvider>
+    <MuiPickersUtilsProvider utils={DateFnsUtils}>
+      <ApolloProvider client={client}>
+        <App storage={{read, write}}/>
+      </ApolloProvider>
+    </MuiPickersUtilsProvider>
   ),
   document.getElementById('root')
 );

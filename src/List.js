@@ -17,24 +17,10 @@ import Edit from '@material-ui/icons/Edit';
 import Paper from '@material-ui/core/Paper';
 import Container from '@material-ui/core/Container';
 import { AnimateGroup } from 'react-animate-mount'
-import format from 'date-fns/format'
 import { useInterval } from './useInterval'
 import './App.css';
 
-function formatTime (timestamp) {
-  return format(new Date(timestamp * 1000), 'HH:mm')
-}
-
-function formatElapsedTime(ms) {
-  const s = ms / 1000
-
-  const min = s / 60
-  if (min < 1) {
-    return '< 1min'
-  }
-
-  return `${Math.round(min)} min`
-}
+import { formatTime, formatElapsedTime } from './time'
 
 function Counter({text, last}) {
   let [count, setCount] = useState(0);
