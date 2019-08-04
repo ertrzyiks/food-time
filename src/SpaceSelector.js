@@ -1,8 +1,8 @@
 import React, { useState } from 'react'
 
 import TextField from '@material-ui/core/TextField'
-import Container from '@material-ui/core/Container'
 import Button from '@material-ui/core/Button'
+import Grid from '@material-ui/core/Grid'
 
 function SpaceSelector({onSelect}) {
   const [value, setValue] = useState('')
@@ -12,18 +12,24 @@ function SpaceSelector({onSelect}) {
       <header className="App-header">
       </header>
 
-      <Container>
-        <TextField
-          label="Space name"
-          value={value}
-          onChange={event => setValue(event.target.value)}
-          margin="normal"
-        />
+      <form onSubmit={() => onSelect(value)}>
+        <Grid container spacing={5} direction="column">
+          <Grid item>
+            <TextField
+              label="Space name"
+              value={value}
+              onChange={event => setValue(event.target.value)}
+              margin="normal"
+            />
+          </Grid>
 
-        <Button variant="contained" color="primary" onClick={() => onSelect(value)}>
-          Primary
-        </Button>
-      </Container>
+          <Grid item>
+            <Button variant="contained" color="primary" >
+              Proceed
+            </Button>
+          </Grid>
+        </Grid>
+      </form>
     </>
 
   )

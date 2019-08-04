@@ -4,11 +4,20 @@ import './index.css';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
 
-import ApolloClient from 'apollo-boost'
-import { ApolloProvider } from '@apollo/react-hooks'
+import { ApolloClient } from 'apollo-client'
+import { createHttpLink } from "apollo-link-http"
+import { InMemoryCache } from 'apollo-cache-inmemory'
+import { ApolloProvider } from 'react-apollo-hooks'
 
 const client = new ApolloClient({
-  uri: process.env.REACT_APP_GRAPHQL_ENDPOINT || 'http://localhost:8080/food-time'
+  cache: new InMemoryCache({
+    cacheRedirects: {
+      Query: {
+        entry: (_, args, { getCacheKey }) => getCacheKey({__typename: 'Entry', id: args.id})
+      },
+    },
+  }),
+  link: createHttpLink({uri: process.env.REACT_APP_GRAPHQL_ENDPOINT || 'http://localhost:8080/food-time'})
 })
 
 const read = (key) => JSON.parse(window.localStorage.getItem(key))

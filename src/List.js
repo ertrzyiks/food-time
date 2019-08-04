@@ -1,13 +1,11 @@
 import React, { useState } from 'react';
-import { gql } from 'apollo-boost'
-import { useQuery, useMutation } from '@apollo/react-hooks'
+import gql from 'graphql-tag'
+import { useQuery, useMutation } from 'react-apollo-hooks'
+import { Link } from 'react-router-dom'
 
 import Button from '@material-ui/core/Button';
 
 import Typography from '@material-ui/core/Typography';
-import Dialog from '@material-ui/core/Dialog';
-import DialogTitle from '@material-ui/core/DialogTitle';
-import DialogActions from '@material-ui/core/DialogActions';
 
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
@@ -15,6 +13,7 @@ import ListItemText from '@material-ui/core/ListItemText';
 import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import IconButton from '@material-ui/core/IconButton';
 import Delete from '@material-ui/icons/Delete';
+import Edit from '@material-ui/icons/Edit';
 import Paper from '@material-ui/core/Paper';
 import Container from '@material-ui/core/Container';
 import { AnimateGroup } from 'react-animate-mount'
@@ -23,7 +22,7 @@ import { useInterval } from './useInterval'
 import './App.css';
 
 function formatTime (timestamp) {
-  return format(new Date(timestamp), 'HH:mm')
+  return format(new Date(timestamp * 1000), 'HH:mm')
 }
 
 function formatElapsedTime(ms) {
@@ -69,16 +68,6 @@ const CREATE_ENTRY = gql`
 `
 
 function EntryList({spaceId}) {
-  // const [state, dispatch] = useReducer(reducer)
-  // const [toDelete, setToDelete] = useState(null)
-
-  // useEffect(
-  //   () => {
-  //     window.localStorage.setItem('items-food-time', JSON.stringify(state));
-  //   },
-  //   [state]
-  // )
-
   const { loading, data } = useQuery(GET_ENTIRES, {variables: {spaceId}})
 
   const [createEntry] = useMutation(CREATE_ENTRY, {
@@ -110,13 +99,17 @@ function EntryList({spaceId}) {
                 <ListItem key={id}>
                   <ListItemText primary={formatTime(time)} />
 
-                  { elapsedTime && elapsedTime < 60 * 60 * 1000 &&
                   <ListItemSecondaryAction>
+                    <IconButton edge="end" aria-label="Comments" component={Link} to={`/edit/${id}`}>
+                      <Edit/>
+                    </IconButton>
+
+                    {elapsedTime && elapsedTime < 60 * 60 * 1000 &&
                     <IconButton edge="end" aria-label="Comments" onClick={() => {}}>
                       <Delete/>
                     </IconButton>
+                    }
                   </ListItemSecondaryAction>
-                  }
                 </ListItem>
               )}
             </AnimateGroup>
@@ -132,21 +125,6 @@ function EntryList({spaceId}) {
           }
         </Paper>
       </Container>
-
-      {/*<Dialog*/}
-      {/*open={Boolean(toDelete)}*/}
-      {/*onClose={() => setToDelete(null)}*/}
-      {/*>*/}
-      {/*<DialogTitle id="alert-dialog-title">Are you sure to remove this item?</DialogTitle>*/}
-      {/*<DialogActions>*/}
-      {/*<Button onClick={() => { dispatch({type: 'delete', id: toDelete}); setToDelete(null) } } color="secondary" autoFocus>*/}
-      {/*Delete*/}
-      {/*</Button>*/}
-      {/*<Button onClick={() => setToDelete(null)} color="primary">*/}
-      {/*Keep it*/}
-      {/*</Button>*/}
-      {/*</DialogActions>*/}
-      {/*</Dialog>*/}
     </>
   )
 }
