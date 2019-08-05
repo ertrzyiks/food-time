@@ -1,7 +1,11 @@
 import format from 'date-fns/format'
 
 export function formatTime (timestamp) {
-  return format(new Date(timestamp * 1000), 'HH:mm')
+  return format(new Date(timestamp), 'HH:mm')
+}
+
+export function formatDay(timestamp) {
+  return format(new Date(timestamp), 'd MMM, yyyy')
 }
 
 export function formatElapsedTime(ms) {

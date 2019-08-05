@@ -83,7 +83,7 @@ function EntryList({spaceId}) {
             <AnimateGroup>
               {data.entries.map(({time, elapsedTime, id}) =>
                 <ListItem key={id}>
-                  <ListItemText primary={formatTime(time)} />
+                  <ListItemText primary={formatTime(time * 1000)} />
 
                   <ListItemSecondaryAction>
                     <IconButton edge="end" aria-label="Comments" component={Link} to={`/edit/${id}`}>
