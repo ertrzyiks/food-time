@@ -3,22 +3,25 @@ import gql from 'graphql-tag'
 import { useQuery, useMutation } from 'react-apollo-hooks'
 import { Link } from 'react-router-dom'
 
-import Button from '@material-ui/core/Button';
+import Button from '@material-ui/core/Button'
 
-import Typography from '@material-ui/core/Typography';
+import Typography from '@material-ui/core/Typography'
 
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemText from '@material-ui/core/ListItemText';
-import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
-import IconButton from '@material-ui/core/IconButton';
-import Delete from '@material-ui/icons/Delete';
-import Edit from '@material-ui/icons/Edit';
-import Paper from '@material-ui/core/Paper';
-import Container from '@material-ui/core/Container';
-import { AnimateGroup } from 'react-animate-mount'
+import List from '@material-ui/core/List'
+import ListItem from '@material-ui/core/ListItem'
+import ListItemText from '@material-ui/core/ListItemText'
+import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction'
+import ListSubheader from '@material-ui/core/ListSubheader'
+import IconButton from '@material-ui/core/IconButton'
+import Edit from '@material-ui/icons/Edit'
+import Paper from '@material-ui/core/Paper'
+import Container from '@material-ui/core/Container'
+import { CSSTransitionGroup } from 'react-transition-group'
 import { useInterval } from './useInterval'
 import './App.css';
+
+import startOfDay from 'date-fns/startOfDay'
+import format from 'date-fns/format'
 
 import { formatTime, formatElapsedTime } from './time'
 
@@ -61,6 +64,15 @@ function EntryList({spaceId}) {
     refetchQueries: ['getEntries']
   })
 
+  const groupedEntries = !loading && data.entries.reduce((acc, entry) => {
+    const day = startOfDay(new Date(entry.time * 1000)).getTime()
+    acc[day] = acc[day] || []
+    acc[day].push(entry)
+    return acc
+  }, {})
+
+  console.log(groupedEntries)
+
   return (
     <>
       <header className="App-header">
@@ -80,25 +92,37 @@ function EntryList({spaceId}) {
         <Paper>
           { !loading && data && data.entries.length > 0 &&
           <List>
-            <AnimateGroup>
-              {data.entries.map(({time, elapsedTime, id}) =>
-                <ListItem key={id}>
-                  <ListItemText primary={formatTime(time * 1000)} />
+            <CSSTransitionGroup
+              transitionName="example"
+              transitionEnterTimeout={500}
+              transitionLeaveTimeout={300}>
+            {
+              Object.entries(groupedEntries).map(([timestamp, group]) => (
+                <div key={timestamp}>
+                  <ListSubheader>
+                    {format(parseInt(timestamp, 10), 'd MMM, yyyy')}
+                  </ListSubheader>
 
-                  <ListItemSecondaryAction>
-                    <IconButton edge="end" aria-label="Comments" component={Link} to={`/edit/${id}`}>
-                      <Edit/>
-                    </IconButton>
+                  <CSSTransitionGroup
+                    transitionName="example"
+                    transitionEnterTimeout={500}
+                    transitionLeaveTimeout={300}>
+                   {group.map(({time, id}) =>
+                      <ListItem key={id}>
+                        <ListItemText primary={formatTime(time * 1000)} />
 
-                    {elapsedTime && elapsedTime < 60 * 60 * 1000 &&
-                    <IconButton edge="end" aria-label="Comments" onClick={() => {}}>
-                      <Delete/>
-                    </IconButton>
-                    }
-                  </ListItemSecondaryAction>
-                </ListItem>
-              )}
-            </AnimateGroup>
+                        <ListItemSecondaryAction>
+                          <IconButton edge="end" aria-label="Comments" component={Link} to={`/edit/${id}`}>
+                            <Edit/>
+                          </IconButton>
+                        </ListItemSecondaryAction>
+                      </ListItem>
+                    )}
+                  </CSSTransitionGroup>
+                </div>
+              ))
+            }
+            </CSSTransitionGroup>
           </List>
           }
 

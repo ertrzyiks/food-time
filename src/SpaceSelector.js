@@ -24,7 +24,7 @@ function SpaceSelector({onSelect}) {
           </Grid>
 
           <Grid item>
-            <Button variant="contained" color="primary" >
+            <Button type='submit' variant="contained" color="primary" >
               Proceed
             </Button>
           </Grid>
