@@ -17,8 +17,8 @@ import { debounce } from './utils'
 
 
 const GET_ENTRY = gql`
-  query getEntry($spaceId: String!, $id: String!) {
-    entry(spaceId: $spaceId, id: $id) {
+  query getEntry($id: String!) {
+    entry(id: $id) {
       id
       time
     }
@@ -26,8 +26,8 @@ const GET_ENTRY = gql`
 `
 
 const UPDATE_ENTRY_TIME = gql`
-  mutation UpdateEntry($spaceId: String!, $id: String!, $time: Int!) {
-    updateEntry(spaceId: $spaceId, id: $id, time: $time) {
+  mutation UpdateEntry($id: String!, $time: Int!) {
+    updateEntry(id: $id, time: $time) {
       id
       time
     }
@@ -45,7 +45,7 @@ const useStyles = makeStyles((theme) =>
 function EntryPage({spaceId, match}) {
   const { id } = match.params
 
-  const { loading, data } = useQuery(GET_ENTRY, {variables: {spaceId, id}})
+  const { loading, data } = useQuery(GET_ENTRY, {variables: {id}})
 
   const [date, setDate] = useState(null)
 
@@ -55,7 +55,6 @@ function EntryPage({spaceId, match}) {
     return client.mutate({
       mutation: UPDATE_ENTRY_TIME,
       variables: {
-        spaceId,
         id,
         ...variables
       }
