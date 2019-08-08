@@ -51,6 +51,8 @@ const CREATE_ENTRY = gql`
   }
 `
 
+const A_DAY = 24 * 60 * 60 * 1000
+
 function EntryList({spaceId}) {
   const { loading, data, error } = useQuery(GET_ENTIRES, {variables: {spaceId}})
 
@@ -66,6 +68,8 @@ function EntryList({spaceId}) {
   }, {})
 
   const onAddEntry = () => createEntry({ variables: { time: Math.round(Date.now() / 1000), spaceId}})
+
+  const now = Date.now()
 
   return (
     <>
@@ -107,11 +111,14 @@ function EntryList({spaceId}) {
                       <ListItem key={id}>
                         <ListItemText primary={formatTime(time * 1000)} />
 
-                        <ListItemSecondaryAction>
-                          <IconButton edge="end" aria-label="Comments" component={Link} to={`/edit/${id}`}>
-                            <Edit/>
-                          </IconButton>
-                        </ListItemSecondaryAction>
+                        {
+                          (now - time * 1000 < A_DAY) &&
+                          <ListItemSecondaryAction>
+                            <IconButton edge="end" aria-label="Comments" component={Link} to={`/edit/${id}`}>
+                              <Edit/>
+                            </IconButton>
+                          </ListItemSecondaryAction>
+                        }
                       </ListItem>
                     )}
                   </CSSTransitionGroup>
