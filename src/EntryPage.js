@@ -61,12 +61,25 @@ function EntryPage({spaceId, match}) {
   const [removeEntry, {data: mutationData}] = useMutation(REMOVE_ENTRY, {
     variables: {id},
     update: (store, { data: {removeEntry} }) => {
-      const listData = store.readQuery({ query: GET_ENTIRES, variables: { spaceId } })
-      store.writeQuery({ query: GET_ENTIRES, variables: { spaceId }, data: {
-        entries: listData.entries.filter(entry => {
-          return entry.id !== removeEntry.removedId
-        })
-      }});
+      let listData = null
+
+      try {
+        listData = store.readQuery({query: GET_ENTIRES, variables: {spaceId}})
+      } catch (e) {
+        // Reading error, do nothing
+      }
+
+      if (!listData) {
+        return
+      }
+
+      store.writeQuery({
+        query: GET_ENTIRES, variables: {spaceId}, data: {
+          entries: listData.entries.filter(entry => {
+            return entry.id !== removeEntry.removedId
+          })
+        }
+      })
     },
   })
 

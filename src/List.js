@@ -19,7 +19,8 @@ import Container from '@material-ui/core/Container'
 import { CircularProgress } from '@material-ui/core'
 import { CSSTransitionGroup } from 'react-transition-group'
 import { useInterval } from './useInterval'
-import './App.css';
+import './App.css'
+import ShowError from './ShowError'
 
 import startOfDay from 'date-fns/startOfDay'
 import format from 'date-fns/format'
@@ -51,13 +52,13 @@ const CREATE_ENTRY = gql`
 `
 
 function EntryList({spaceId}) {
-  const { loading, data } = useQuery(GET_ENTIRES, {variables: {spaceId}})
+  const { loading, data, error } = useQuery(GET_ENTIRES, {variables: {spaceId}})
 
   const [createEntry] = useMutation(CREATE_ENTRY, {
     refetchQueries: ['getEntries']
   })
 
-  const groupedEntries = !loading && data.entries.reduce((acc, entry) => {
+  const groupedEntries = !loading && !error && data.entries.reduce((acc, entry) => {
     const day = startOfDay(new Date(entry.time * 1000)).getTime()
     acc[day] = acc[day] || []
     acc[day].push(entry)
@@ -69,6 +70,7 @@ function EntryList({spaceId}) {
   return (
     <>
       <header className="App-header">
+        { error && <ShowError message={error.toString()} /> }
 
         { !loading &&
         <Typography variant="h5" component="p">
@@ -82,7 +84,7 @@ function EntryList({spaceId}) {
       </header>
 
       <Container maxWidth="sm">
-        {!loading &&
+        {!loading && !error &&
         <Paper>
           { !loading && data && data.entries.length > 0 &&
           <List>
