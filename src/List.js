@@ -55,12 +55,23 @@ const A_DAY = 24 * 60 * 60 * 1000
 
 function EntryList({spaceId}) {
   const { loading, data, error } = useQuery(GET_ENTIRES, {variables: {spaceId}})
+  const hasData = !loading && !error
 
   const [createEntry] = useMutation(CREATE_ENTRY, {
     refetchQueries: ['getEntries']
   })
 
-  const groupedEntries = !loading && !error && data.entries.reduce((acc, entry) => {
+  const entries = hasData && data.entries.reverse().reduce((acc, entry) => {
+    if (acc.length > 0) {
+      const last = acc[acc.length - 1]
+
+      return [...acc, {...entry, meantime: entry.time - last.time}]
+    } else {
+      return [{...entry, meantime: null}]
+    }
+  }, []).reverse()
+
+  const groupedEntries = entries && entries.reduce((acc, entry) => {
     const day = startOfDay(new Date(entry.time * 1000)).getTime()
     acc[day] = acc[day] || []
     acc[day].push(entry)
@@ -107,19 +118,25 @@ function EntryList({spaceId}) {
                     transitionName="example"
                     transitionEnterTimeout={500}
                     transitionLeaveTimeout={300}>
-                   {group.map(({time, id}) =>
-                      <ListItem key={id}>
-                        <ListItemText primary={formatTime(time * 1000)} />
-
-                        {
-                          (now - time * 1000 < A_DAY) &&
-                          <ListItemSecondaryAction>
-                            <IconButton edge="end" aria-label="Comments" component={Link} to={`/edit/${id}`}>
-                              <Edit/>
-                            </IconButton>
-                          </ListItemSecondaryAction>
-                        }
-                      </ListItem>
+                   {group.map(({time, id, meantime}) =>
+                     <React.Fragment key={id}>
+                       <ListItem>
+                         <ListItemText primary={formatTime(time * 1000)} />
+                          {
+                            (now - time * 1000 < A_DAY) &&
+                            <ListItemSecondaryAction>
+                              <IconButton edge="end" aria-label="Comments" component={Link} to={`/edit/${id}`}>
+                                <Edit/>
+                              </IconButton>
+                            </ListItemSecondaryAction>
+                          }
+                        </ListItem>
+                       { meantime &&
+                         <ListItem>
+                           <ListItemText secondary={formatElapsedTime(meantime * 1000)} />
+                         </ListItem>
+                       }
+                     </React.Fragment>
                     )}
                   </CSSTransitionGroup>
                 </div>

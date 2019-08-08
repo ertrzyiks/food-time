@@ -16,5 +16,9 @@ export function formatElapsedTime(ms) {
     return '< 1min'
   }
 
-  return `${Math.round(min)} min`
+  if (min < 60) {
+    return `~ 1h`
+  }
+
+  return `~ ${Math.round(min / 60)}h`
 }
