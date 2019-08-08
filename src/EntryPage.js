@@ -7,14 +7,17 @@ import addHours from 'date-fns/addHours'
 import addDays from 'date-fns/addDays'
 import subDays from 'date-fns/subDays'
 
-import { Container, Fab, Paper, CircularProgress, Typography, Grid, Slider } from '@material-ui/core'
-import { useQuery, useApolloClient } from 'react-apollo-hooks'
+import { Redirect } from 'react-router-dom'
+
+import { Button, Container, Fab, Paper, CircularProgress, Typography, Grid, Slider } from '@material-ui/core'
+import { useQuery, useMutation, useApolloClient } from 'react-apollo-hooks'
 import AddIcon from '@material-ui/icons/Add'
 import RemoveIcon from '@material-ui/icons/Remove'
 import { createStyles, makeStyles } from '@material-ui/core/styles'
 import { formatTime, formatDay } from './time'
 import { debounce } from './utils'
 
+import { GET_ENTIRES } from './queries'
 
 const GET_ENTRY = gql`
   query getEntry($id: String!) {
@@ -34,6 +37,15 @@ const UPDATE_ENTRY_TIME = gql`
   }
 `
 
+const REMOVE_ENTRY = gql`
+  mutation RemoveEntry($id: String!) {
+    removeEntry(id: $id) {
+      message
+      removedId
+    }
+  }
+`
+
 const useStyles = makeStyles((theme) =>
   createStyles({
     root: {
@@ -46,6 +58,17 @@ function EntryPage({spaceId, match}) {
   const { id } = match.params
 
   const { loading, data } = useQuery(GET_ENTRY, {variables: {id}})
+  const [removeEntry, {data: mutationData}] = useMutation(REMOVE_ENTRY, {
+    variables: {id},
+    update: (store, { data: {removeEntry} }) => {
+      const listData = store.readQuery({ query: GET_ENTIRES, variables: { spaceId } })
+      store.writeQuery({ query: GET_ENTIRES, variables: { spaceId }, data: {
+        entries: listData.entries.filter(entry => {
+          return entry.id !== removeEntry.removedId
+        })
+      }});
+    },
+  })
 
   const [date, setDate] = useState(null)
 
@@ -73,6 +96,10 @@ function EntryPage({spaceId, match}) {
   }
 
   const classes = useStyles()
+
+  if (mutationData) {
+    return <Redirect to='/'/>
+  }
 
   return (
     <>
@@ -150,6 +177,16 @@ function EntryPage({spaceId, match}) {
                     min={10}
                     max={110}
                   />
+                </Paper>
+              </Grid>
+
+              <Grid item xs={12} md={12}>
+                <Paper className={classes.root}>
+                  <Typography paragraph>
+                    Danger zone
+                  </Typography>
+
+                  <Button variant="contained" color='secondary' onClick={removeEntry}>Delete</Button>
                 </Paper>
               </Grid>
             </Grid>

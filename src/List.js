@@ -25,6 +25,8 @@ import format from 'date-fns/format'
 
 import { formatTime, formatElapsedTime } from './time'
 
+import { GET_ENTIRES } from './queries'
+
 function Counter({text, last}) {
   let [count, setCount] = useState(0);
 
@@ -38,15 +40,6 @@ function Counter({text, last}) {
 
   return <span>{text}: {formatElapsedTime(Date.now() - last.now)}</span>;
 }
-
-const GET_ENTIRES = gql`
-  query getEntries($spaceId: String!) {
-    entries(spaceId: $spaceId) {
-      id
-      time
-    }
-  }
-`
 
 const CREATE_ENTRY = gql`
   mutation CreateEntry($spaceId: String!, $time: Int!) {
