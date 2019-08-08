@@ -16,6 +16,7 @@ import IconButton from '@material-ui/core/IconButton'
 import Edit from '@material-ui/icons/Edit'
 import Paper from '@material-ui/core/Paper'
 import Container from '@material-ui/core/Container'
+import { CircularProgress } from '@material-ui/core'
 import { CSSTransitionGroup } from 'react-transition-group'
 import { useInterval } from './useInterval'
 import './App.css';
@@ -81,6 +82,7 @@ function EntryList({spaceId}) {
       </header>
 
       <Container maxWidth="sm">
+        {!loading &&
         <Paper>
           { !loading && data && data.entries.length > 0 &&
           <List>
@@ -125,7 +127,11 @@ function EntryList({spaceId}) {
             </ListItem>
           </List>
           }
+
         </Paper>
+        }
+
+        { loading && <CircularProgress /> }
       </Container>
     </>
   )
