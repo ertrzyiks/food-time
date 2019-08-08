@@ -60,7 +60,6 @@ function EntryList({spaceId}) {
   const { loading, data } = useQuery(GET_ENTIRES, {variables: {spaceId}})
 
   const [createEntry] = useMutation(CREATE_ENTRY, {
-    variables: { time: Math.round(Date.now() / 1000), spaceId},
     refetchQueries: ['getEntries']
   })
 
@@ -71,7 +70,7 @@ function EntryList({spaceId}) {
     return acc
   }, {})
 
-  console.log(groupedEntries)
+  const onAddEntry = () => createEntry({ variables: { time: Math.round(Date.now() / 1000), spaceId}})
 
   return (
     <>
@@ -83,7 +82,7 @@ function EntryList({spaceId}) {
         </Typography>
         }
 
-        <Button variant="contained" size='large' color="primary" onClick={() => createEntry()}>
+        <Button variant="contained" size='large' color="primary" onClick={onAddEntry}>
           Now
         </Button>
       </header>
