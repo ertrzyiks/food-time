@@ -121,9 +121,14 @@ function EntryList({spaceId}) {
 
   if (entries.length > 0) {
     const theMostRecent = entries[0]
+    const theMostRecentDate = new Date(theMostRecent.time * 1000)
+    const hours = theMostRecentDate.getHours()
+    const isLate = (hours > 21 || hours < 6)
+    const nextEntryInMinutes = isLate ? 240 : 210
+
     entries.unshift({
       id: 'future',
-      time: Math.round(addMinutes(new Date(theMostRecent.time * 1000), 210) / 1000),
+      time: Math.round(addMinutes(theMostRecentDate, nextEntryInMinutes) / 1000),
       meantime: null,
       isSuggested: true
     })
