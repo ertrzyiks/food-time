@@ -17,6 +17,7 @@ import Edit from '@material-ui/icons/Edit'
 import Paper from '@material-ui/core/Paper'
 import Container from '@material-ui/core/Container'
 import { CircularProgress } from '@material-ui/core'
+import { makeStyles } from '@material-ui/core/styles';
 import { CSSTransitionGroup } from 'react-transition-group'
 import { useInterval } from './useInterval'
 import './App.css'
@@ -24,6 +25,7 @@ import ShowError from './ShowError'
 
 import startOfDay from 'date-fns/startOfDay'
 import format from 'date-fns/format'
+import addMinutes from 'date-fns/addMinutes'
 
 import { formatTime, formatElapsedTime } from './time'
 
@@ -55,8 +57,16 @@ const CREATE_ENTRY = gql`
 
 const A_DAY = 24 * 60 * 60 * 1000
 
+const useStyles = makeStyles((theme) => ({
+  item: {
+    opacity: 0.2
+  }
+}));
+
 const GrouppedList = ({groupedEntries}) => {
   const now = Date.now()
+
+  const classes = useStyles()
 
   return (
     <List>
@@ -71,11 +81,11 @@ const GrouppedList = ({groupedEntries}) => {
               {format(parseInt(timestamp, 10), 'd MMM, yyyy')}
             </ListSubheader>
 
-            {group.map(({time, id, meantime}) =>
-              <ListItem key={id}>
+            {group.map(({time, id, meantime, isSuggested}) =>
+              <ListItem key={id} className={isSuggested && classes.item}>
                 <ListItemText primary={formatTime(time * 1000)} secondary={meantime} />
                 {
-                  (now - time * 1000 < A_DAY) &&
+                  !isSuggested && (now - time * 1000 < A_DAY) &&
                   <ListItemSecondaryAction>
                     <IconButton edge="end" aria-label="Comments" component={Link} to={`/edit/${id}`}>
                       <Edit/>
@@ -108,6 +118,16 @@ function EntryList({spaceId}) {
       return [{...entry, meantime: null}]
     }
   }, []).reverse()
+
+  if (entries.length > 0) {
+    const theMostRecent = entries[0]
+    entries.unshift({
+      id: 'future',
+      time: Math.round(addMinutes(new Date(theMostRecent.time * 1000), 210) / 1000),
+      meantime: null,
+      isSuggested: true
+    })
+  }
 
   const groupedEntries = entries && entries.reduce((acc, entry) => {
     const day = startOfDay(new Date(entry.time * 1000)).getTime()
