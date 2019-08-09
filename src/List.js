@@ -24,7 +24,7 @@ import ShowError from './ShowError'
 
 import startOfDay from 'date-fns/startOfDay'
 import format from 'date-fns/format'
-import formatDistance from 'date-fns/formatDistance'
+import formatDistanceStrict from 'date-fns/formatDistanceStrict'
 
 import { formatTime, formatElapsedTime } from './time'
 
@@ -104,7 +104,7 @@ function EntryList({spaceId}) {
     if (acc.length > 0) {
       const last = acc[acc.length - 1]
 
-      return [...acc, {...entry, meantime: formatDistance(new Date(last.time * 1000), new Date(entry.time * 1000))}]
+      return [...acc, {...entry, meantime: formatDistanceStrict(new Date(last.time * 1000), new Date(entry.time * 1000))}]
     } else {
       return [{...entry, meantime: null}]
     }
