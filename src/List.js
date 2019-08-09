@@ -16,7 +16,7 @@ import IconButton from '@material-ui/core/IconButton'
 import Edit from '@material-ui/icons/Edit'
 import Paper from '@material-ui/core/Paper'
 import Container from '@material-ui/core/Container'
-import { CircularProgress, Collapse } from '@material-ui/core'
+import { CircularProgress } from '@material-ui/core'
 import { CSSTransitionGroup } from 'react-transition-group'
 import { useInterval } from './useInterval'
 import './App.css'
@@ -48,11 +48,49 @@ const CREATE_ENTRY = gql`
   mutation CreateEntry($spaceId: String!, $time: Int!) {
     createEntry(spaceId: $spaceId, time: $time) {
       id
+      time
+      extra_food
     }
   }
 `
 
 const A_DAY = 24 * 60 * 60 * 1000
+
+const GrouppedList = ({groupedEntries}) => {
+  const now = Date.now()
+
+  return (
+    <List>
+      {
+        Object.entries(groupedEntries).map(([timestamp, group]) => (
+          <CSSTransitionGroup
+            key={timestamp}
+            transitionName="example"
+            transitionEnterTimeout={500}
+            transitionLeaveTimeout={300}>
+            <ListSubheader>
+              {format(parseInt(timestamp, 10), 'd MMM, yyyy')}
+            </ListSubheader>
+
+            {group.map(({time, id, meantime}) =>
+              <ListItem key={id}>
+                <ListItemText primary={formatTime(time * 1000)} secondary={meantime} />
+                {
+                  (now - time * 1000 < A_DAY) &&
+                  <ListItemSecondaryAction>
+                    <IconButton edge="end" aria-label="Comments" component={Link} to={`/edit/${id}`}>
+                      <Edit/>
+                    </IconButton>
+                  </ListItemSecondaryAction>
+                }
+              </ListItem>
+            )}
+          </CSSTransitionGroup>
+        ))
+      }
+    </List>
+  )
+}
 
 function EntryList({spaceId}) {
   const { loading, data, error } = useQuery(GET_ENTIRES, {variables: {spaceId}})
@@ -62,7 +100,7 @@ function EntryList({spaceId}) {
     refetchQueries: ['getEntries']
   })
 
-  const entries = hasData && data.entries.reverse().reduce((acc, entry) => {
+  const entries = hasData && data.entries.slice().reverse().reduce((acc, entry) => {
     if (acc.length > 0) {
       const last = acc[acc.length - 1]
 
@@ -80,8 +118,6 @@ function EntryList({spaceId}) {
   }, {})
 
   const onAddEntry = () => createEntry({ variables: { time: Math.round(Date.now() / 1000), spaceId}})
-
-  const now = Date.now()
 
   return (
     <>
@@ -103,41 +139,7 @@ function EntryList({spaceId}) {
         {!loading && !error &&
         <Paper>
           { !loading && data && data.entries.length > 0 &&
-          <List>
-            <CSSTransitionGroup
-              transitionName="example"
-              transitionEnterTimeout={500}
-              transitionLeaveTimeout={300}>
-            {
-              Object.entries(groupedEntries).map(([timestamp, group]) => (
-                <div key={timestamp}>
-                  <ListSubheader>
-                    {format(parseInt(timestamp, 10), 'd MMM, yyyy')}
-                  </ListSubheader>
-
-                  <CSSTransitionGroup
-                    transitionName="example"
-                    transitionEnterTimeout={500}
-                    transitionLeaveTimeout={300}>
-                   {group.map(({time, id, meantime}) =>
-                     <ListItem key={id}>
-                       <ListItemText primary={formatTime(time * 1000)} secondary={meantime} />
-                        {
-                          (now - time * 1000 < A_DAY) &&
-                          <ListItemSecondaryAction>
-                            <IconButton edge="end" aria-label="Comments" component={Link} to={`/edit/${id}`}>
-                              <Edit/>
-                            </IconButton>
-                          </ListItemSecondaryAction>
-                        }
-                      </ListItem>
-                    )}
-                  </CSSTransitionGroup>
-                </div>
-              ))
-            }
-            </CSSTransitionGroup>
-          </List>
+            <GrouppedList groupedEntries={groupedEntries}/>
           }
 
           { !loading && data && data.entries.length === 0 &&
