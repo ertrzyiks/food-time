@@ -105,7 +105,7 @@ function EntryList({spaceId}) {
   const { loading, data, error } = useQuery(GET_ENTIRES, {variables: {spaceId}})
   const hasData = !loading && !error
 
-  const [createEntry] = useMutation(CREATE_ENTRY, {
+  const [createEntry, {loading: creationLoading}] = useMutation(CREATE_ENTRY, {
     refetchQueries: ['getEntries']
   })
 
@@ -154,7 +154,7 @@ function EntryList({spaceId}) {
         </Typography>
         }
 
-        <Button variant="contained" size='large' color="primary" onClick={onAddEntry}>
+        <Button variant="contained" size='large' color="primary" onClick={onAddEntry} disabled={creationLoading}>
           Now
         </Button>
       </header>
