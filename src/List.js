@@ -16,7 +16,7 @@ import IconButton from '@material-ui/core/IconButton'
 import Edit from '@material-ui/icons/Edit'
 import Paper from '@material-ui/core/Paper'
 import Container from '@material-ui/core/Container'
-import { CircularProgress } from '@material-ui/core'
+import { CircularProgress, Collapse } from '@material-ui/core'
 import { CSSTransitionGroup } from 'react-transition-group'
 import { useInterval } from './useInterval'
 import './App.css'
@@ -24,6 +24,7 @@ import ShowError from './ShowError'
 
 import startOfDay from 'date-fns/startOfDay'
 import format from 'date-fns/format'
+import formatDistance from 'date-fns/formatDistance'
 
 import { formatTime, formatElapsedTime } from './time'
 
@@ -65,7 +66,7 @@ function EntryList({spaceId}) {
     if (acc.length > 0) {
       const last = acc[acc.length - 1]
 
-      return [...acc, {...entry, meantime: entry.time - last.time}]
+      return [...acc, {...entry, meantime: formatDistance(new Date(last.time * 1000), new Date(entry.time * 1000))}]
     } else {
       return [{...entry, meantime: null}]
     }
@@ -119,24 +120,17 @@ function EntryList({spaceId}) {
                     transitionEnterTimeout={500}
                     transitionLeaveTimeout={300}>
                    {group.map(({time, id, meantime}) =>
-                     <React.Fragment key={id}>
-                       <ListItem>
-                         <ListItemText primary={formatTime(time * 1000)} />
-                          {
-                            (now - time * 1000 < A_DAY) &&
-                            <ListItemSecondaryAction>
-                              <IconButton edge="end" aria-label="Comments" component={Link} to={`/edit/${id}`}>
-                                <Edit/>
-                              </IconButton>
-                            </ListItemSecondaryAction>
-                          }
-                        </ListItem>
-                       { meantime &&
-                         <ListItem>
-                           <ListItemText secondary={formatElapsedTime(meantime * 1000)} />
-                         </ListItem>
-                       }
-                     </React.Fragment>
+                     <ListItem key={id}>
+                       <ListItemText primary={formatTime(time * 1000)} secondary={meantime} />
+                        {
+                          (now - time * 1000 < A_DAY) &&
+                          <ListItemSecondaryAction>
+                            <IconButton edge="end" aria-label="Comments" component={Link} to={`/edit/${id}`}>
+                              <Edit/>
+                            </IconButton>
+                          </ListItemSecondaryAction>
+                        }
+                      </ListItem>
                     )}
                   </CSSTransitionGroup>
                 </div>
