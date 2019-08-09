@@ -1,49 +1,23 @@
-import React, { useState } from 'react';
+import React from 'react';
 import gql from 'graphql-tag'
 import { useQuery, useMutation } from 'react-apollo-hooks'
-import { Link } from 'react-router-dom'
 
 import Button from '@material-ui/core/Button'
 
-import Typography from '@material-ui/core/Typography'
-
-import List from '@material-ui/core/List'
-import ListItem from '@material-ui/core/ListItem'
-import ListItemText from '@material-ui/core/ListItemText'
-import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction'
-import ListSubheader from '@material-ui/core/ListSubheader'
-import IconButton from '@material-ui/core/IconButton'
-import Edit from '@material-ui/icons/Edit'
 import Paper from '@material-ui/core/Paper'
 import Container from '@material-ui/core/Container'
-import { CircularProgress } from '@material-ui/core'
-import { makeStyles } from '@material-ui/core/styles';
-import { CSSTransitionGroup } from 'react-transition-group'
-import { useInterval } from './useInterval'
+import { CircularProgress,  List, ListItem, ListItemText } from '@material-ui/core'
+
 import './App.css'
 import ShowError from './ShowError'
+import GrouppedList from './GrouppedList'
 
 import startOfDay from 'date-fns/startOfDay'
-import format from 'date-fns/format'
 import addMinutes from 'date-fns/addMinutes'
 
-import { formatTime, formatElapsedTime } from './time'
+import { formatElapsedTime } from './time'
 
 import { GET_ENTIRES } from './queries'
-
-function Counter({text, last}) {
-  let [count, setCount] = useState(0);
-
-  useInterval(() => {
-    setCount(count + 1);
-  }, 30 * 1000);
-
-  if (!last) {
-    return null
-  }
-
-  return <span>{text}: {formatElapsedTime(Date.now() - last.now)}</span>;
-}
 
 const CREATE_ENTRY = gql`
   mutation CreateEntry($spaceId: String!, $time: Int!) {
@@ -54,52 +28,6 @@ const CREATE_ENTRY = gql`
     }
   }
 `
-
-const A_DAY = 24 * 60 * 60 * 1000
-
-const useStyles = makeStyles((theme) => ({
-  item: {
-    opacity: 0.2
-  }
-}));
-
-const GrouppedList = ({groupedEntries}) => {
-  const now = Date.now()
-
-  const classes = useStyles()
-
-  return (
-    <List>
-      {
-        Object.entries(groupedEntries).map(([timestamp, group]) => (
-          <CSSTransitionGroup
-            key={timestamp}
-            transitionName="example"
-            transitionEnterTimeout={500}
-            transitionLeaveTimeout={300}>
-            <ListSubheader>
-              {format(parseInt(timestamp, 10), 'd MMM, yyyy')}
-            </ListSubheader>
-
-            {group.map(({time, id, meantime, isSuggested}) =>
-              <ListItem key={id} className={isSuggested && classes.item}>
-                <ListItemText primary={formatTime(time * 1000)} secondary={meantime} />
-                {
-                  !isSuggested && (now - time * 1000 < A_DAY) &&
-                  <ListItemSecondaryAction>
-                    <IconButton edge="end" aria-label="Comments" component={Link} to={`/edit/${id}`}>
-                      <Edit/>
-                    </IconButton>
-                  </ListItemSecondaryAction>
-                }
-              </ListItem>
-            )}
-          </CSSTransitionGroup>
-        ))
-      }
-    </List>
-  )
-}
 
 function EntryList({spaceId}) {
   const { loading, data, error } = useQuery(GET_ENTIRES, {variables: {spaceId}})
@@ -147,12 +75,6 @@ function EntryList({spaceId}) {
     <>
       <header className="App-header">
         { (error || creationError) && <ShowError message={error || creationError} /> }
-
-        { !loading &&
-        <Typography variant="h5" component="p">
-          <Counter text='Since last event' last={0}/>
-        </Typography>
-        }
 
         <Button variant="contained" size='large' color="primary" onClick={onAddEntry} disabled={creationLoading}>
           Now
