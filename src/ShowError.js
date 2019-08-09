@@ -34,7 +34,7 @@ const ShowError = ({message}) => {
       onClose={handleClose}
       open={open}
     >
-      <MuiSnackbarContent className={classes.error} message={message} onClose={handleClose} />
+      <MuiSnackbarContent className={classes.error} message={message.toString()} onClose={handleClose} />
     </MuiSnackbar>
   )
 }

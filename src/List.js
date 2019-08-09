@@ -105,7 +105,7 @@ function EntryList({spaceId}) {
   const { loading, data, error } = useQuery(GET_ENTIRES, {variables: {spaceId}})
   const hasData = !loading && !error
 
-  const [createEntry, {loading: creationLoading}] = useMutation(CREATE_ENTRY, {
+  const [createEntry, {loading: creationLoading, error: creationError}] = useMutation(CREATE_ENTRY, {
     refetchQueries: ['getEntries']
   })
 
@@ -146,7 +146,7 @@ function EntryList({spaceId}) {
   return (
     <>
       <header className="App-header">
-        { error && <ShowError message={error.toString()} /> }
+        { (error || creationError) && <ShowError message={error || creationError} /> }
 
         { !loading &&
         <Typography variant="h5" component="p">
