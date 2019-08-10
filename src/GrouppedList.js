@@ -19,6 +19,16 @@ const A_DAY = 24 * 60 * 60 * 1000
 const useStyles = makeStyles(theme => ({
   item: {
     opacity: 0.3
+  },
+  root: {
+    backgroundColor: theme.palette.background.paper
+  },
+  subheader: {
+    backgroundColor: '#ead3d3',
+    textAlign: 'left'
+  },
+  subheader_total: {
+    float: 'right'
   }
 }))
 
@@ -41,8 +51,14 @@ const SuggestedListItem = ({time, key}) => {
 const GrouppedList = ({groupedEntries}) => {
   const now = Date.now()
 
+  const getTotalEntries = (group) => {
+    return group.filter(({isSuggested}) => !isSuggested).length
+  }
+
+  const classes = useStyles()
+
   return (
-    <List>
+    <List disablePadding className={classes.root}>
       {
         Object.entries(groupedEntries).map(([timestamp, group]) => (
           <CSSTransitionGroup
@@ -50,8 +66,9 @@ const GrouppedList = ({groupedEntries}) => {
             transitionName="example"
             transitionEnterTimeout={500}
             transitionLeaveTimeout={300}>
-            <ListSubheader>
+            <ListSubheader className={classes.subheader}>
               {format(parseInt(timestamp, 10), 'd MMM, yyyy')}
+              <span className={classes.subheader_total}>(total {getTotalEntries(group)})</span>
             </ListSubheader>
 
             {group.map(({time, id, meantime, isSuggested}) => (
