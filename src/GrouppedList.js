@@ -5,11 +5,12 @@ import ListItemText from '@material-ui/core/ListItemText'
 import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction'
 import ListSubheader from '@material-ui/core/ListSubheader'
 import IconButton from '@material-ui/core/IconButton'
+import { ListItemIcon } from '@material-ui/core'
 import Edit from '@material-ui/icons/Edit'
 
 import format from 'date-fns/format'
 import {Link} from 'react-router-dom'
-import {formatElapsedTime, formatTime} from './time'
+import { formatElapsedTime, formatTime } from './time'
 import { makeStyles } from '@material-ui/core/styles'
 import { CSSTransitionGroup } from 'react-transition-group'
 import { useInterval } from './useInterval'
@@ -54,10 +55,13 @@ const GrouppedList = ({groupedEntries}) => {
               {format(parseInt(timestamp, 10), 'd MMM, yyyy')}
             </ListSubheader>
 
-            {group.map(({time, id, meantime, isSuggested}) => (
+            {group.map(({time, id, meantime, isSuggested}, position) => (
                 isSuggested
                   ? <SuggestedListItem key={id} time={time} />
                   : <ListItem key={id}>
+                    <ListItemIcon>
+                      #{group.length - position}
+                    </ListItemIcon>
                     <ListItemText primary={formatTime(time * 1000)} secondary={meantime} />
                     {
                       (now - time * 1000 < A_DAY) &&

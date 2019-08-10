@@ -41,7 +41,10 @@ function EntryList({spaceId}) {
     if (acc.length > 0) {
       const last = acc[acc.length - 1]
 
-      return [...acc, {...entry, meantime: formatElapsedTime(new Date(entry.time * 1000), new Date(last.time * 1000))}]
+      return [...acc, {
+        ...entry,
+        meantime: formatElapsedTime(new Date(entry.time * 1000), new Date(last.time * 1000))
+      }]
     } else {
       return [{...entry, meantime: null}]
     }
