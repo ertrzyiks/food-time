@@ -1,5 +1,4 @@
 import React, { useState, useCallback } from 'react'
-import gql from 'graphql-tag'
 import subMinutes from 'date-fns/subMinutes'
 import addMinutes from 'date-fns/addMinutes'
 import subHours from 'date-fns/subHours'
@@ -17,34 +16,12 @@ import { createStyles, makeStyles } from '@material-ui/core/styles'
 import { formatTime, formatDay } from './time'
 import { debounce } from './utils'
 
-import { GET_ENTIRES } from './queries'
-
-const GET_ENTRY = gql`
-  query getEntry($id: String!) {
-    entry(id: $id) {
-      id
-      time
-    }
-  }
-`
-
-const UPDATE_ENTRY_TIME = gql`
-  mutation UpdateEntry($id: String!, $time: Int!) {
-    updateEntry(id: $id, time: $time) {
-      id
-      time
-    }
-  }
-`
-
-const REMOVE_ENTRY = gql`
-  mutation RemoveEntry($id: String!) {
-    removeEntry(id: $id) {
-      message
-      removedId
-    }
-  }
-`
+import {
+  GET_ENTIRES,
+  GET_ENTRY,
+  UPDATE_ENTRY_TIME,
+  REMOVE_ENTRY
+} from './queries'
 
 const useStyles = makeStyles((theme) =>
   createStyles({
@@ -84,6 +61,7 @@ function EntryPage({spaceId, match}) {
   })
 
   const [date, setDate] = useState(null)
+  const [extraFood, setExtraFood] = useState(null)
 
   const client = useApolloClient()
 
@@ -95,16 +73,27 @@ function EntryPage({spaceId, match}) {
         ...variables
       }
     })
-  }), [spaceId, id])
+  }), [client, id])
 
   if (date === null && !loading) {
     setDate(new Date(data.entry.time * 1000))
+  }
+
+  if (extraFood === null && !loading) {
+    setExtraFood(data.entry.extra_food)
   }
 
   const updateDate = (date) => {
     setDate(date)
     updateEntry({
       time: Math.round(date.getTime() / 1000)
+    })
+  }
+
+  const updateExtraFood = (value) => {
+    setExtraFood(value)
+    updateEntry({
+      extra_food: value
     })
   }
 
@@ -179,16 +168,17 @@ function EntryPage({spaceId, match}) {
               <Grid item xs={12} md={12}>
                 <Paper className={classes.root}>
                   <Typography paragraph>
-                    Extra food
+                    Extra food - {extraFood}ml
                   </Typography>
 
                   <Slider
-                    defaultValue={30}
-                    aria-labelledby="discrete-slider"
-                    valueLabelDisplay="auto"
-                    step={10}
-                    min={10}
-                    max={110}
+                    defaultValue={extraFood}
+                    aria-labelledby='discrete-slider'
+                    valueLabelDisplay='off'
+                    step={5}
+                    min={0}
+                    max={150}
+                    onChange={(e, value) => updateExtraFood(value)}
                   />
                 </Paper>
               </Grid>
