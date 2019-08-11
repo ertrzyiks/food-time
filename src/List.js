@@ -37,7 +37,9 @@ function EntryList({spaceId}) {
     refetchQueries: ['getEntries']
   })
 
-  const entries = hasData && data.entries.slice().reverse().reduce((acc, entry) => {
+  const sortedDataEntries = hasData && data.entries.slice().sort((e1, e2) => e2.time - e1.time)
+
+  const entries = hasData && sortedDataEntries.reverse().reduce((acc, entry) => {
     if (acc.length > 0) {
       const last = acc[acc.length - 1]
 
@@ -54,7 +56,7 @@ function EntryList({spaceId}) {
     const theMostRecent = entries[0]
     const theMostRecentDate = new Date(theMostRecent.time * 1000)
     const hours = theMostRecentDate.getHours()
-    const isLate = (hours > 21 || hours < 6)
+    const isLate = (hours >= 21 || hours < 3)
     const nextEntryInMinutes = isLate ? 240 : 210
 
     entries.unshift({
