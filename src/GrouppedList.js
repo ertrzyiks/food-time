@@ -4,8 +4,9 @@ import ListItem from '@material-ui/core/ListItem'
 import ListItemText from '@material-ui/core/ListItemText'
 import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction'
 import ListSubheader from '@material-ui/core/ListSubheader'
-import IconButton from '@material-ui/core/IconButton'
+import { ListItemIcon, IconButton } from '@material-ui/core'
 import Edit from '@material-ui/icons/Edit'
+import Opacity from '@material-ui/icons/Opacity'
 
 import format from 'date-fns/format'
 import {Link} from 'react-router-dom'
@@ -29,6 +30,10 @@ const useStyles = makeStyles(theme => ({
   },
   subheader_total: {
     float: 'right'
+  },
+  icon: {
+    flexDirection: 'column',
+    fontSize: 12
   }
 }))
 
@@ -71,19 +76,25 @@ const GrouppedList = ({groupedEntries}) => {
               <span className={classes.subheader_total}>(total {getTotalEntries(group)})</span>
             </ListSubheader>
 
-            {group.map(({time, id, meantime, isSuggested}) => (
+            {group.map(({id, time, extra_food, meantime, isSuggested}) => (
                 isSuggested
                   ? <SuggestedListItem key={id} time={time} />
                   : <ListItem key={id}>
-                    <ListItemText primary={formatTime(time * 1000)} secondary={meantime} />
-                    {
-                      (now - time * 1000 < A_DAY) &&
-                      <ListItemSecondaryAction>
+                    <ListItemIcon className={classes.icon}>
+                       { extra_food > 0 && <><Opacity/> {extra_food}ml</> }
+                    </ListItemIcon>
+
+                    <ListItemText secondary={meantime} >
+                      {formatTime(time * 1000)}
+                    </ListItemText>
+                    <ListItemSecondaryAction>
+                      {
+                        (now - time * 1000 < A_DAY) &&
                         <IconButton edge='end' aria-label='Comments' component={Link} to={`/edit/${id}`}>
                           <Edit/>
                         </IconButton>
-                      </ListItemSecondaryAction>
-                    }
+                      }
+                    </ListItemSecondaryAction>
                   </ListItem>
               )
             )}

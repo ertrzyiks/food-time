@@ -5,6 +5,7 @@ export const GET_ENTIRES = gql`
     entries(spaceId: $spaceId) {
       id
       time
+      extra_food
     }
   }
 `

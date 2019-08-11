@@ -62,6 +62,7 @@ function EntryList({spaceId}) {
     entries.unshift({
       id: 'future',
       time: Math.round(addMinutes(theMostRecentDate, nextEntryInMinutes) / 1000),
+      extra_food: 0,
       meantime: null,
       isSuggested: true
     })
