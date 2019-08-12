@@ -3,10 +3,16 @@ import gql from 'graphql-tag'
 import { useQuery, useMutation } from 'react-apollo-hooks'
 
 import Button from '@material-ui/core/Button'
+import AppBar from '@material-ui/core/AppBar'
+import Toolbar from '@material-ui/core/Toolbar'
+import Typography from '@material-ui/core/Typography'
+import Avatar from '@material-ui/core/Avatar'
 
 import Paper from '@material-ui/core/Paper'
 import Container from '@material-ui/core/Container'
 import { CircularProgress,  List, ListItem, ListItemText } from '@material-ui/core'
+
+import { makeStyles } from '@material-ui/core/styles';
 
 import ShowError from './ShowError'
 import GrouppedList from './GrouppedList'
@@ -28,7 +34,26 @@ const CREATE_ENTRY = gql`
   }
 `
 
-function EntryList({spaceId}) {
+const useStyles = makeStyles({
+  appBar: {
+    backgroundColor: '#3e4451',
+  },
+  avatar: {
+    margin: 15,
+    width: 40,
+    height: 40,
+  },
+  toolbar: {
+    justifyContent: 'space-between'
+  },
+  title: {
+    margin: 15,
+  }
+});
+
+function EntryList({spaceId, profile}) {
+  const classes = useStyles();
+
   const { loading, data, error } = useQuery(GET_ENTIRES, {variables: {spaceId}})
   const hasData = !loading && !error
 
@@ -78,13 +103,23 @@ function EntryList({spaceId}) {
 
   return (
     <>
-      <header className="App-header">
+      <div className="App-header">
         { (error || creationError) && <ShowError message={error || creationError} /> }
 
+        <AppBar className={classes.appBar}>
+          <Toolbar disableGutters={true} className={classes.toolbar}>
+            <Typography variant="h5" className={classes.title}>
+              Food time
+            </Typography>
+            <Avatar alt="Profile picture" src={profile.imageUrl} className={classes.avatar} />
+          </Toolbar>
+        </AppBar>
+        <Toolbar/>
         <Button variant="contained" size='large' color="primary" onClick={onAddEntry} disabled={creationLoading}>
           Now
         </Button>
-      </header>
+
+      </div>
 
       <Container maxWidth="sm">
         {!loading && !error &&

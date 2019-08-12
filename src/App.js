@@ -30,7 +30,7 @@ function App({storage}) {
             <ApolloProvider client={getClient(user.tokenId)}>
               {spaceId
                 ? <>
-                 <Route exact path="/" render={() => <EntryList spaceId={spaceId} />}/>
+                 <Route exact path="/" render={() => <EntryList spaceId={spaceId} profile={user.profileObj} />}/>
                  <Route path = "/edit/:id" render={props => <EntryPage {...props} spaceId={spaceId}/>} />
                 </>
                 : <Route exact path="/" render={props => <SpaceSelector {...props} onSelect={selectedSpaceId => setSpaceId(selectedSpaceId)}/>} />
