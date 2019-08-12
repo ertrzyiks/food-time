@@ -13,15 +13,15 @@ import { useQuery, useMutation, useApolloClient } from 'react-apollo-hooks'
 import AddIcon from '@material-ui/icons/Add'
 import RemoveIcon from '@material-ui/icons/Remove'
 import { createStyles, makeStyles } from '@material-ui/core/styles'
-import { formatTime, formatDay } from './time'
-import { debounce } from './utils'
+import { formatTime, formatDay } from '../time'
+import { debounce } from '../utils'
 
 import {
   GET_ENTIRES,
   GET_ENTRY,
   UPDATE_ENTRY_TIME,
   REMOVE_ENTRY
-} from './queries'
+} from '../queries'
 
 const useStyles = makeStyles((theme) =>
   createStyles({

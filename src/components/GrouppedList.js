@@ -10,10 +10,10 @@ import Opacity from '@material-ui/icons/Opacity'
 
 import format from 'date-fns/format'
 import {Link} from 'react-router-dom'
-import { formatElapsedTime, formatTime } from './time'
+import { formatElapsedTime, formatTime } from '../time'
 import { makeStyles } from '@material-ui/core/styles'
 import { CSSTransitionGroup } from 'react-transition-group'
-import { useInterval } from './useInterval'
+import { useInterval } from '../useInterval'
 
 const A_DAY = 24 * 60 * 60 * 1000
 
@@ -81,7 +81,7 @@ const GrouppedList = ({groupedEntries}) => {
                   ? <SuggestedListItem key={id} time={time} />
                   : <ListItem key={id}>
                     <ListItemIcon className={classes.icon}>
-                       { extra_food > 0 && <><Opacity/> {extra_food}ml</> }
+                       { extra_food > 0 ? <><Opacity/> {extra_food}ml</> : null }
                     </ListItemIcon>
 
                     <ListItemText secondary={meantime} >

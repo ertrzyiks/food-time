@@ -8,16 +8,15 @@ import Paper from '@material-ui/core/Paper'
 import Container from '@material-ui/core/Container'
 import { CircularProgress,  List, ListItem, ListItemText } from '@material-ui/core'
 
-import './App.css'
 import ShowError from './ShowError'
 import GrouppedList from './GrouppedList'
 
 import startOfDay from 'date-fns/startOfDay'
 import addMinutes from 'date-fns/addMinutes'
 
-import { formatElapsedTime } from './time'
+import { formatElapsedTime } from '../time'
 
-import { GET_ENTIRES } from './queries'
+import { GET_ENTIRES } from '../queries'
 
 const CREATE_ENTRY = gql`
   mutation CreateEntry($spaceId: String!, $time: Int!) {
