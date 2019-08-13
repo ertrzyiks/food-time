@@ -2,15 +2,21 @@ import React from 'react';
 import gql from 'graphql-tag'
 import { useQuery, useMutation } from 'react-apollo-hooks'
 
-import Button from '@material-ui/core/Button'
 import AppBar from '@material-ui/core/AppBar'
 import Toolbar from '@material-ui/core/Toolbar'
 import Typography from '@material-ui/core/Typography'
 import Avatar from '@material-ui/core/Avatar'
+import AddIcon from '@material-ui/icons/Add'
 
 import Paper from '@material-ui/core/Paper'
 import Container from '@material-ui/core/Container'
-import { CircularProgress,  List, ListItem, ListItemText } from '@material-ui/core'
+import {
+  CircularProgress,
+  List,
+  ListItem,
+  ListItemText,
+  Fab
+} from '@material-ui/core'
 
 import { makeStyles } from '@material-ui/core/styles';
 
@@ -34,7 +40,7 @@ const CREATE_ENTRY = gql`
   }
 `
 
-const useStyles = makeStyles({
+const useStyles = makeStyles(theme => ({
   appBar: {
     backgroundColor: '#3e4451',
   },
@@ -44,12 +50,22 @@ const useStyles = makeStyles({
     height: 40,
   },
   toolbar: {
-    justifyContent: 'space-between'
+    justifyContent: 'space-between',
+    height: 70
   },
   title: {
     margin: 15,
+  },
+  fab: {
+    position: 'fixed',
+    bottom: theme.spacing(2),
+    right: theme.spacing(2),
+    zIndex: 2
+  },
+  listWrapper: {
+    marginTop: theme.spacing(2)
   }
-});
+}))
 
 function EntryList({spaceId, profile}) {
   const classes = useStyles();
@@ -103,25 +119,25 @@ function EntryList({spaceId, profile}) {
 
   return (
     <>
-      <div className="App-header">
-        { (error || creationError) && <ShowError message={error || creationError} /> }
+      { (error || creationError) && <ShowError message={error || creationError} /> }
 
-        <AppBar className={classes.appBar}>
-          <Toolbar disableGutters={true} className={classes.toolbar}>
-            <Typography variant="h5" className={classes.title}>
-              Food time
-            </Typography>
-            <Avatar alt="Profile picture" src={profile.imageUrl} className={classes.avatar} />
-          </Toolbar>
-        </AppBar>
-        <Toolbar/>
-        <Button variant="contained" size='large' color="primary" onClick={onAddEntry} disabled={creationLoading}>
-          Now
-        </Button>
+      <AppBar className={classes.appBar}>
+        <Toolbar disableGutters={true} className={classes.toolbar}>
+          <Typography variant="h5" className={classes.title}>
+            Food time
+          </Typography>
+          <Avatar alt="Profile picture" src={profile.imageUrl} className={classes.avatar} />
+        </Toolbar>
+      </AppBar>
 
-      </div>
+      <Toolbar className={classes.toolbar}/>
 
-      <Container maxWidth="sm">
+      <Container className={classes.listWrapper} maxWidth="sm">
+        <Fab variant='extended' color='primary' aria-label="delete" className={classes.fab} onClick={onAddEntry} disabled={creationLoading}>
+          <AddIcon className={classes.extendedIcon} />
+          New feeding
+        </Fab>
+
         {!loading && !error &&
         <Paper>
           { !loading && data && data.entries.length > 0 &&
