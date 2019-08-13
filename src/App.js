@@ -37,7 +37,7 @@ function App({storage}) {
 
               }
             </ApolloProvider> :
-            <Route exact path="/" render={props => <SignInForm {...props} onLogin={user => setUser(user)}/>} />
+            <Route path='/' render={props => <SignInForm {...props} onLogin={user => setUser(user)}/>} />
           }
           <Route component={NotFound} />
         </Switch>

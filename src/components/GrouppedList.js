@@ -80,9 +80,11 @@ const GrouppedList = ({groupedEntries}) => {
                 isSuggested
                   ? <SuggestedListItem key={id} time={time} />
                   : <ListItem key={id}>
-                    <ListItemIcon className={classes.icon}>
-                       { extra_food > 0 ? <><Opacity/> {extra_food}ml</> : null }
-                    </ListItemIcon>
+                    {extra_food > 0 &&
+                      <ListItemIcon className={classes.icon}>
+                        <Opacity/> {extra_food}ml
+                      </ListItemIcon>
+                    }
 
                     <ListItemText secondary={meantime} >
                       {formatTime(time * 1000)}
