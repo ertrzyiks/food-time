@@ -15,7 +15,7 @@ const RememberSpace = ({match, write, children}) => {
 
   useEffect(() => {
     write(id)
-  }, [id])
+  }, [write, id])
 
   return children
 }

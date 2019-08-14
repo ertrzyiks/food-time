@@ -31,7 +31,8 @@ const useStyles = makeStyles(theme => ({
   subheader_total: {
     float: 'right'
   },
-  icon: {
+  icon_wrapper: {
+    display: 'flex',
     flexDirection: 'column',
     fontSize: 12
   }
@@ -52,6 +53,8 @@ const SuggestedListItem = ({time, key}) => {
     <ListItemText primary={`Next at ${formatTime(date)}`} secondary={date > now && formatElapsedTime(date, now)} />
   </ListItem>
 }
+
+const Nothing = () => null
 
 const GrouppedList = ({groupedEntries}) => {
   const now = Date.now()
@@ -80,11 +83,15 @@ const GrouppedList = ({groupedEntries}) => {
                 isSuggested
                   ? <SuggestedListItem key={id} time={time} />
                   : <ListItem key={id}>
-                    {extra_food > 0 &&
-                      <ListItemIcon className={classes.icon}>
-                        <Opacity/> {extra_food}ml
-                      </ListItemIcon>
-                    }
+                    <ListItemIcon>
+                      {extra_food > 0
+                        ?
+                          <div className={classes.icon_wrapper}>
+                            <Opacity/> {extra_food}ml
+                          </div>
+                        : <Nothing/>
+                      }
+                    </ListItemIcon>
 
                     <ListItemText secondary={meantime} >
                       {formatTime(time * 1000)}
