@@ -67,8 +67,10 @@ const useStyles = makeStyles(theme => ({
   }
 }))
 
-function EntryList({spaceId, profile}) {
+function EntryList({match, profile}) {
   const classes = useStyles();
+
+  const spaceId = match.params.id
 
   const { loading, data, error } = useQuery(GET_ENTIRES, {variables: {spaceId}})
   const hasData = !loading && !error

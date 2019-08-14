@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { HashRouter, Route, Switch } from 'react-router-dom'
+import { HashRouter, Route, Redirect, Switch } from 'react-router-dom'
 import { ApolloProvider } from 'react-apollo-hooks'
 
 import EntryList from './components/List'
@@ -10,16 +10,23 @@ import NotFound from './components/NotFound'
 import getClient from './client'
 import './App.css'
 
+const RememberSpace = ({match, write, children}) => {
+  const id = match.params.id
+
+  useEffect(() => {
+    write(id)
+  }, [id])
+
+  return children
+}
+
 function App({storage}) {
   const storageKey = 'food-time-space-id'
   const { read, write } = storage
 
-  const [spaceId, setSpaceId] = useState(read(storageKey))
-  const [user, setUser] = useState(null)
+  const lastSpaceId = read(storageKey)
 
-  useEffect(() => {
-    write(storageKey, spaceId)
-  }, [spaceId, write])
+  const [user, setUser] = useState(null)
 
   return (
     <div className="App">
@@ -27,15 +34,26 @@ function App({storage}) {
         <Switch>
           {
             user ?
-            <ApolloProvider client={getClient(user.tokenId)}>
-              {spaceId
-                ? <>
-                 <Route exact path="/" render={() => <EntryList spaceId={spaceId} profile={user.profileObj} />}/>
-                 <Route path = "/edit/:id" render={props => <EntryPage {...props} spaceId={spaceId}/>} />
-                </>
-                : <Route exact path="/" render={props => <SpaceSelector {...props} onSelect={selectedSpaceId => setSpaceId(selectedSpaceId)}/>} />
+              <ApolloProvider client={getClient(user.tokenId)}>
+                <Switch>
 
-              }
+                  <Route exact path='/select' render={props => <SpaceSelector {...props} />} />
+                  <Route path='/space/:id' render={
+                    props =>
+                      <RememberSpace write={id => write(storageKey, id)} match={props.match}>
+                        <EntryList {...props} profile={user.profileObj} />
+                      </RememberSpace>}
+                  />
+                  <Route path='/edit/:id' render={props => <EntryPage {...props} />} />
+
+                  <Route exact path='/'>
+                    { lastSpaceId
+                      ? <Redirect to={`/space/${lastSpaceId}`}/>
+                      : <Redirect to='/select'/>
+                    }
+                  </Route>
+
+                </Switch>
             </ApolloProvider> :
             <Route path='/' render={props => <SignInForm {...props} onLogin={user => setUser(user)}/>} />
           }
