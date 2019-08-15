@@ -25,7 +25,8 @@ const useStyles = makeStyles(theme => ({
     backgroundColor: theme.palette.background.paper
   },
   subheader: {
-    backgroundColor: '#ead3d3',
+    backgroundColor: theme.palette.primary.light,
+    color: theme.palette.common.white,
     textAlign: 'left'
   },
   subheader_total: {
