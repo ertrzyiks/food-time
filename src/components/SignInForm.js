@@ -1,35 +1,57 @@
-import React from 'react'
-import { GoogleLogin, GoogleLogout } from 'react-google-login'
+import React, { useState, useEffect } from 'react'
+import { GoogleLogin } from 'react-google-login'
+import { CircularProgress } from '@material-ui/core'
 
-const SignInForm = ({onLogin}) => {
+import { makeStyles } from '@material-ui/core/styles'
+
+const useStyles = makeStyles(theme => ({
+  root: {
+    position: 'relative',
+    minHeight: 40
+  },
+  loader: {
+    position: 'absolute',
+    backgroundColor: 'white',
+    top: -3,
+    bottom: -5,
+    left: 0,
+    right: 0,
+    zIndex: 1
+  }
+}))
+
+const SignInForm = ({ onLogin }) => {
+  const classes = useStyles()
+
   const responseGoogle = (response) => {
-    console.log(response)
     onLogin(response)
   }
 
-  const logout = () => {
+  const [loading, setLoading] = useState(true)
 
-  }
+  useEffect(() => {
+    let timeout = setTimeout(() => {
+      setLoading(false)
+    }, 1500)
+
+    return () => clearTimeout(timeout)
+  })
 
   return  <>
     <header className="App-header">
     </header>
 
-    <GoogleLogin
-      clientId="299114443733-g59vv11262camtp97hiv99sjh0qr3b9i.apps.googleusercontent.com"
-      buttonText="Login"
-      onSuccess={responseGoogle}
-      onFailure={responseGoogle}
-      isSignedIn={true}
-      cookiePolicy={'single_host_origin'}
-    />
-
-    {/*<GoogleLogout*/}
-    {/*clientId="299114443733-g59vv11262camtp97hiv99sjh0qr3b9i.apps.googleusercontent.com"*/}
-    {/*buttonText="Logout"*/}
-    {/*onLogoutSuccess={logout}*/}
-    {/*>*/}
-    {/*</GoogleLogout>*/}
+    <div className={classes.root}>
+      { loading && <div className={classes.loader}><CircularProgress /></div> }
+      <GoogleLogin
+        clientId='299114443733-g59vv11262camtp97hiv99sjh0qr3b9i.apps.googleusercontent.com'
+        buttonText='Login'
+        onSuccess={responseGoogle}
+        onFailure={responseGoogle}
+        isSignedIn={true}
+        cookiePolicy='single_host_origin'
+      />
+    </div>
   </>
 }
 
