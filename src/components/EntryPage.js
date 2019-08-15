@@ -31,10 +31,12 @@ const useStyles = makeStyles((theme) =>
   }),
 )
 
-function EntryPage({spaceId, match}) {
+function EntryPage({match}) {
   const { id } = match.params
 
   const { loading, data } = useQuery(GET_ENTRY, {variables: {id}})
+  const spaceId = data && data.entry.spaceId
+
   const [removeEntry, {data: mutationData}] = useMutation(REMOVE_ENTRY, {
     variables: {id},
     update: (store, { data: {removeEntry} }) => {
@@ -100,7 +102,7 @@ function EntryPage({spaceId, match}) {
   const classes = useStyles()
 
   if (mutationData) {
-    return <Redirect to='/'/>
+    return <Redirect to={`/space/${spaceId}`}/>
   }
 
   return (

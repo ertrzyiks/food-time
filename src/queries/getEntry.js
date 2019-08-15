@@ -6,6 +6,7 @@ export const GET_ENTRY = gql`
       id
       time
       extra_food
+      spaceId
     }
   }
 `
