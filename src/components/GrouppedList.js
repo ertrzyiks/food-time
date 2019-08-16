@@ -25,8 +25,8 @@ const useStyles = makeStyles(theme => ({
     backgroundColor: theme.palette.background.paper
   },
   subheader: {
-    backgroundColor: theme.palette.primary.light,
-    color: theme.palette.common.white,
+    backgroundColor: '#f0f2fa',
+    color: theme.palette.common.black,
     textAlign: 'left'
   },
   subheader_total: {
