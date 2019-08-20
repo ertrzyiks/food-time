@@ -24,6 +24,13 @@ const ShowError = ({message}) => {
     setOpen(false)
   }
 
+ if (message.networkError
+   && message.networkError.result
+   && message.networkError.result.errors
+   && message.networkError.result.errors.length > 0) {
+    message = message.networkError.result.errors[0].message.slice(0, 100)
+ }
+
   return (
     <MuiSnackbar
       anchorOrigin={{
