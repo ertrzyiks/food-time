@@ -7,6 +7,7 @@ export const GET_ENTIRES = gql`
       time
       extra_food
       spaceId
+      type  
     }
   }
 `

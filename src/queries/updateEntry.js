@@ -6,6 +6,7 @@ export const UPDATE_ENTRY_TIME = gql`
       id
       time
       extra_food
+      type  
     }
   }
 `
