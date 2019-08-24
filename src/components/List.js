@@ -1,6 +1,7 @@
 import React from 'react';
 import gql from 'graphql-tag'
 import { useQuery, useMutation } from 'react-apollo-hooks'
+import differenceInHours from 'date-fns/differenceInHours'
 
 import AppBar from '@material-ui/core/AppBar'
 import Toolbar from '@material-ui/core/Toolbar'
@@ -15,7 +16,8 @@ import {
   List,
   ListItem,
   ListItemText,
-  Fab
+  Fab,
+  SnackbarContent
 } from '@material-ui/core'
 
 import { makeStyles } from '@material-ui/core/styles';
@@ -67,6 +69,48 @@ const useStyles = makeStyles(theme => ({
   }
 }))
 
+function SnackbarContentWrapper(props) {
+  const useSnackbarStyles = makeStyles(theme => ({
+    info: {
+      backgroundColor: theme.palette.primary.main,
+    },
+    error: {
+      backgroundColor: theme.palette.error.dark,
+    },
+    messageBox: {
+      marginBottom: 20
+    },
+    message: {
+      display: 'flex',
+      alignItems: 'center',
+    },
+  }));
+
+  const classes = useSnackbarStyles();
+  const { variant, children } = props;
+
+  return (
+    <SnackbarContent
+      className={[classes[variant], classes.messageBox].join(' ')}
+      aria-describedby="client-snackbar"
+      message={
+        <span id="client-snackbar" className={classes.message}>
+          {children}
+        </span>
+      }
+    />
+  );
+}
+
+const TimeSinceLastFeeding = ({lastFeedingTime, nextFeedingTime}) => (
+  <SnackbarContentWrapper
+    variant={Date.now() > nextFeedingTime ? 'error' : 'info'}>
+    It's been&nbsp;
+    <Typography variant="subtitle1" component="span">{formatElapsedTime(new Date(), new Date(lastFeedingTime))}</Typography>
+    &nbsp;since last feeding
+  </SnackbarContentWrapper>
+)
+
 function EntryList({match, profile}) {
   const classes = useStyles();
 
@@ -99,7 +143,7 @@ function EntryList({match, profile}) {
     const theMostRecentDate = new Date(theMostRecent.time * 1000)
     const hours = theMostRecentDate.getHours()
     const isLate = (hours >= 21 || hours < 3)
-    const nextEntryInMinutes = isLate ? 240 : 210
+    const nextEntryInMinutes = isLate ? 210 : 150
 
     entries.unshift({
       id: 'future',
@@ -140,6 +184,10 @@ function EntryList({match, profile}) {
           New feeding
         </Fab>
 
+        { !loading && data && data.entries.length > 0 &&
+          <TimeSinceLastFeeding lastFeedingTime={entries[1].time * 1000} nextFeedingTime={entries[0].time * 1000}/>
+        }
+
         {!loading && !error &&
         <Paper>
           { !loading && data && data.entries.length > 0 &&
@@ -156,7 +204,6 @@ function EntryList({match, profile}) {
 
         </Paper>
         }
-
         { loading && <CircularProgress /> }
       </Container>
     </>
