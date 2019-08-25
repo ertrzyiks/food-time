@@ -2,13 +2,7 @@ import React from 'react';
 import gql from 'graphql-tag'
 import { useQuery, useMutation } from 'react-apollo-hooks'
 
-import { green, blue } from '@material-ui/core/colors'
-import AppBar from '@material-ui/core/AppBar'
-import Toolbar from '@material-ui/core/Toolbar'
-import Typography from '@material-ui/core/Typography'
-import Avatar from '@material-ui/core/Avatar'
 import AddIcon from '@material-ui/icons/Add'
-import InfoIcon from '@material-ui/icons/Info'
 
 import Paper from '@material-ui/core/Paper'
 import Container from '@material-ui/core/Container'
@@ -17,14 +11,15 @@ import {
   List,
   ListItem,
   ListItemText,
-  Fab,
-  SnackbarContent
+  Fab
 } from '@material-ui/core'
 
-import { makeStyles, withStyles } from '@material-ui/core/styles'
+import { makeStyles } from '@material-ui/core/styles'
 
 import ShowError from './ShowError'
 import GrouppedList from './GrouppedList'
+import TimeSinceLastFeeding from './TimeSinceLastFeeding'
+import Layout from './Layout'
 
 import startOfDay from 'date-fns/startOfDay'
 import addMinutes from 'date-fns/addMinutes'
@@ -44,21 +39,6 @@ const CREATE_ENTRY = gql`
 `
 
 const useStyles = makeStyles(theme => ({
-  appBar: {
-    backgroundColor: '#3e4451',
-  },
-  avatar: {
-    margin: 15,
-    width: 40,
-    height: 40,
-  },
-  toolbar: {
-    justifyContent: 'space-between',
-    height: 70
-  },
-  title: {
-    margin: 15,
-  },
   fab: {
     position: 'fixed',
     bottom: theme.spacing(2),
@@ -70,51 +50,6 @@ const useStyles = makeStyles(theme => ({
   }
 }))
 
-function SnackbarContentWrapper(props) {
-  const useSnackbarStyles = makeStyles(theme => ({
-    info: {
-      backgroundColor: theme.palette.primary.main,
-    },
-    error: {
-      backgroundColor: theme.palette.error.dark,
-    },
-    messageBox: {
-      marginBottom: 20
-    },
-    message: {
-      display: 'flex',
-      alignItems: 'center',
-    },
-    icon: {
-      marginRight: theme.spacing(1),
-    }
-  }));
-
-  const classes = useSnackbarStyles();
-  const { variant, children } = props;
-
-  return (
-    <SnackbarContent
-      className={[classes[variant], classes.messageBox].join(' ')}
-      aria-describedby="client-snackbar"
-      message={
-        <span id="client-snackbar" className={classes.message}>
-          <InfoIcon className={classes.icon}/>
-          {children}
-        </span>
-      }
-    />
-  );
-}
-
-const TimeSinceLastFeeding = ({lastFeedingTime, nextFeedingTime}) => (
-  <SnackbarContentWrapper
-    variant={Date.now() > nextFeedingTime ? 'error' : 'info'}>
-    It's been&nbsp;
-    <Typography variant="subtitle1" component="span">{formatElapsedTime(new Date(), new Date(lastFeedingTime))}</Typography>
-    &nbsp;since last feeding
-  </SnackbarContentWrapper>
-)
 
 function EntryList({match, profile}) {
   const classes = useStyles();
@@ -169,19 +104,8 @@ function EntryList({match, profile}) {
   const onAddEntry = () => createEntry({ variables: { time: Math.round(Date.now() / 1000), spaceId}})
 
   return (
-    <>
+    <Layout profile={profile}>
       { (error || creationError) && <ShowError message={error || creationError} /> }
-
-      <AppBar className={classes.appBar}>
-        <Toolbar disableGutters={true} className={classes.toolbar}>
-          <Typography variant="h5" className={classes.title}>
-            Food time
-          </Typography>
-          <Avatar alt="Profile picture" src={profile.imageUrl} className={classes.avatar} />
-        </Toolbar>
-      </AppBar>
-
-      <Toolbar className={classes.toolbar}/>
 
       <Container className={classes.listWrapper} maxWidth="sm">
         <Fab variant='extended' color='primary' aria-label="delete" className={classes.fab} onClick={onAddEntry} disabled={creationLoading}>
@@ -211,7 +135,7 @@ function EntryList({match, profile}) {
         }
         { loading && <CircularProgress /> }
       </Container>
-    </>
+    </Layout>
   )
 }
 

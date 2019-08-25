@@ -6,12 +6,24 @@ import addHours from 'date-fns/addHours'
 import addDays from 'date-fns/addDays'
 import subDays from 'date-fns/subDays'
 
-import { Redirect } from 'react-router-dom'
+import { Redirect, Link as RouterLink } from 'react-router-dom'
 
-import { Button, Container, Fab, Paper, CircularProgress, Typography, Grid, Slider } from '@material-ui/core'
+import {
+  Button,
+  Container,
+  Fab,
+  Paper,
+  CircularProgress,
+  Typography,
+  Grid,
+  Slider,
+  IconButton
+} from '@material-ui/core'
 import { useQuery, useMutation, useApolloClient } from 'react-apollo-hooks'
 import AddIcon from '@material-ui/icons/Add'
 import RemoveIcon from '@material-ui/icons/Remove'
+import ArrowBackIcon from '@material-ui/icons/ArrowBack'
+import Layout from './Layout'
 import { createStyles, makeStyles } from '@material-ui/core/styles'
 import { formatTime, formatDay } from '../time'
 import { debounce } from '../utils'
@@ -31,7 +43,7 @@ const useStyles = makeStyles((theme) =>
   }),
 )
 
-function EntryPage({match}) {
+function EntryPage({match, profile}) {
   const { id } = match.params
 
   const { loading, data } = useQuery(GET_ENTRY, {variables: {id}})
@@ -105,11 +117,15 @@ function EntryPage({match}) {
     return <Redirect to={`/space/${spaceId}`}/>
   }
 
+  const backButton = <IconButton edge='start' color='inherit' component={props => <RouterLink {...props} to={`/space/${spaceId}`}/>}>
+    <ArrowBackIcon/>
+  </IconButton>
+
   return (
-    <>
+    <Layout profile={profile} toolbarIcon={backButton}>
       <header className="App-header">
         { !loading &&
-          <Typography>
+          <Typography variant='h5'>
             {formatTime(date)} {formatDay(date)}
           </Typography>
         }
@@ -198,7 +214,7 @@ function EntryPage({match}) {
         }
 
       </Container>
-    </>
+    </Layout>
   )
 }
 

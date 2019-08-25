@@ -58,7 +58,7 @@ function App({storage}) {
                         <EntryList {...props} profile={user.profileObj} />
                       </RememberSpace>}
                   />
-                  <Route path='/edit/:id' render={props => <EntryPage {...props} />} />
+                  <Route path='/edit/:id' render={props => <EntryPage profile={user.profileObj} {...props} />} />
 
                   <Route exact path='/'>
                     { lastSpaceId
