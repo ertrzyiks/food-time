@@ -1,13 +1,14 @@
 import React from 'react';
 import gql from 'graphql-tag'
 import { useQuery, useMutation } from 'react-apollo-hooks'
-import differenceInHours from 'date-fns/differenceInHours'
 
+import { green, blue } from '@material-ui/core/colors'
 import AppBar from '@material-ui/core/AppBar'
 import Toolbar from '@material-ui/core/Toolbar'
 import Typography from '@material-ui/core/Typography'
 import Avatar from '@material-ui/core/Avatar'
 import AddIcon from '@material-ui/icons/Add'
+import InfoIcon from '@material-ui/icons/Info'
 
 import Paper from '@material-ui/core/Paper'
 import Container from '@material-ui/core/Container'
@@ -20,7 +21,7 @@ import {
   SnackbarContent
 } from '@material-ui/core'
 
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles, withStyles } from '@material-ui/core/styles'
 
 import ShowError from './ShowError'
 import GrouppedList from './GrouppedList'
@@ -84,6 +85,9 @@ function SnackbarContentWrapper(props) {
       display: 'flex',
       alignItems: 'center',
     },
+    icon: {
+      marginRight: theme.spacing(1),
+    }
   }));
 
   const classes = useSnackbarStyles();
@@ -95,6 +99,7 @@ function SnackbarContentWrapper(props) {
       aria-describedby="client-snackbar"
       message={
         <span id="client-snackbar" className={classes.message}>
+          <InfoIcon className={classes.icon}/>
           {children}
         </span>
       }
