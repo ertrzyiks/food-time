@@ -72,7 +72,7 @@ const Layout = ({toolbarIcon, children}) => {
               open={Boolean(anchorEl)}
               onClose={handleClose}
             >
-              <MenuItem component={RouterLink} to={SelectPage.path()}onClick={handleClose}>Select space</MenuItem>
+              <MenuItem component={RouterLink} to={SelectPage.path()} onClick={handleClose}>Spaces</MenuItem>
             </Menu>
           </>
         }
