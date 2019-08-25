@@ -10,6 +10,7 @@ import NotFound from './components/NotFound'
 import ProfileContext from './ProfileContext'
 import getClient from './client'
 import './App.css'
+import {HomePage, SelectPage, EditPage, SpacePage} from './routing'
 
 const RememberSpace = ({match, write, children}) => {
   const id = match.params.id
@@ -53,25 +54,25 @@ function App({storage}) {
                 <ApolloProvider client={getClient(() => read(tokenIdStorageKey))}>
                   <Switch>
 
-                    <Route exact path='/select' render={props => <SpaceSelector {...props} />} />
-                    <Route path='/space/:id' render={
+                    <Route exact path={SelectPage.pattern} render={props => <SpaceSelector {...props} />} />
+                    <Route path={SpacePage.pattern} render={
                       props =>
                         <RememberSpace write={id => write(storageKey, id)} match={props.match}>
                           <EntryList {...props} profile={user.profileObj} />
                         </RememberSpace>}
                     />
-                    <Route path='/edit/:id' render={props => <EntryPage profile={user.profileObj} {...props} />} />
+                    <Route path={EditPage.pattern} render={props => <EntryPage {...props} />} />
 
-                    <Route exact path='/'>
+                    <Route exact path={HomePage.pattern}>
                       { lastSpaceId
-                        ? <Redirect to={`/space/${lastSpaceId}`}/>
-                        : <Redirect to='/select'/>
+                        ? <Redirect to={SpacePage.path({id: lastSpaceId})}/>
+                        : <Redirect to={SelectPage.path()}/>
                       }
                     </Route>
 
                   </Switch>
               </ApolloProvider> :
-              <Route path='/' render={props => <SignInForm {...props} onLogin={user => {
+              <Route path={HomePage.pattern} render={props => <SignInForm {...props} onLogin={user => {
                 write(tokenIdStorageKey, user.tokenId)
                 setUser(user)
               }}/>} />

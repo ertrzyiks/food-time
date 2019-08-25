@@ -28,6 +28,8 @@ import { createStyles, makeStyles } from '@material-ui/core/styles'
 import { formatTime, formatDay } from '../time'
 import { debounce } from '../utils'
 
+import { SpacePage } from '../routing'
+
 import {
   GET_ENTIRES,
   GET_ENTRY,
@@ -114,12 +116,17 @@ function EntryPage({match}) {
   const classes = useStyles()
 
   if (mutationData) {
-    return <Redirect to={`/space/${spaceId}`}/>
+    return <Redirect to={SpacePage.path({id: spaceId})}/>
   }
 
-  const backButton = <IconButton edge='start' color='inherit' component={props => <RouterLink {...props} to={`/space/${spaceId}`}/>}>
-    <ArrowBackIcon/>
-  </IconButton>
+  const backButton = (
+    <IconButton
+    edge='start'
+    color='inherit'
+    component={props => <RouterLink {...props} to={SpacePage.path({id: spaceId})}/>}>
+      <ArrowBackIcon/>
+    </IconButton>
+  )
 
   return (
     <Layout toolbarIcon={backButton}>
