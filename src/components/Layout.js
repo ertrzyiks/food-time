@@ -5,11 +5,16 @@ import {
   Avatar,
   Toolbar,
   Typography,
-  Box
+  Box,
+  Menu,
+  MenuItem
 } from '@material-ui/core'
 
+import { Link as RouterLink } from 'react-router-dom'
 import {makeStyles} from '@material-ui/core/styles'
 import ProfileContext from '../ProfileContext'
+
+import { SelectPage } from '../routing'
 
 const useStyles = makeStyles({
   appBar: {
@@ -31,6 +36,16 @@ const Layout = ({toolbarIcon, children}) => {
   const classes = useStyles()
   const profile = useContext(ProfileContext)
 
+  const [anchorEl, setAnchorEl] = React.useState(null)
+
+  function handleClick(event) {
+    setAnchorEl(event.currentTarget)
+  }
+
+  function handleClose() {
+    setAnchorEl(null)
+  }
+
   return <>
     <AppBar className={classes.appBar}>
       <Toolbar disableGutters={true} className={classes.toolbar}>
@@ -41,7 +56,25 @@ const Layout = ({toolbarIcon, children}) => {
         </Typography>
 
         {profile &&
-        <Avatar alt="Profile picture" src={profile.imageUrl} className={classes.avatar}/>
+          <>
+            <Avatar alt="Profile picture"
+                    src={profile.imageUrl}
+                    aria-controls='user-menu'
+                    aria-haspopup='true'
+                    className={classes.avatar}
+                    onClick={handleClick}/>
+            <Menu
+              id='user-menu'
+              anchorEl={anchorEl}
+              anchorOrigin={{vertical: 'bottom', horizontal: 'right'}}
+              getContentAnchorEl={null}
+              keepMounted
+              open={Boolean(anchorEl)}
+              onClose={handleClose}
+            >
+              <MenuItem component={RouterLink} to={SelectPage.path()}onClick={handleClose}>Select space</MenuItem>
+            </Menu>
+          </>
         }
       </Toolbar>
     </AppBar>
