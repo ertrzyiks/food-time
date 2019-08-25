@@ -43,7 +43,7 @@ const useStyles = makeStyles((theme) =>
   }),
 )
 
-function EntryPage({match, profile}) {
+function EntryPage({match}) {
   const { id } = match.params
 
   const { loading, data } = useQuery(GET_ENTRY, {variables: {id}})
@@ -122,7 +122,7 @@ function EntryPage({match, profile}) {
   </IconButton>
 
   return (
-    <Layout profile={profile} toolbarIcon={backButton}>
+    <Layout toolbarIcon={backButton}>
       <header className="App-header">
         { !loading &&
           <Typography variant='h5'>

@@ -7,6 +7,7 @@ import SpaceSelector from './components/SpaceSelector'
 import SignInForm from './components/SignInForm'
 import EntryPage from './components/EntryPage'
 import NotFound from './components/NotFound'
+import ProfileContext from './ProfileContext'
 import getClient from './client'
 import './App.css'
 
@@ -43,41 +44,43 @@ function App({storage}) {
   }, [write, user])
 
   return (
-    <div className="App">
-      <HashRouter>
-        <Switch>
-          {
-            user ?
-              <ApolloProvider client={getClient(() => read(tokenIdStorageKey))}>
-                <Switch>
+    <ProfileContext.Provider value={user && user.profileObj}>
+      <div className='App'>
+        <HashRouter>
+          <Switch>
+            {
+              user ?
+                <ApolloProvider client={getClient(() => read(tokenIdStorageKey))}>
+                  <Switch>
 
-                  <Route exact path='/select' render={props => <SpaceSelector {...props} />} />
-                  <Route path='/space/:id' render={
-                    props =>
-                      <RememberSpace write={id => write(storageKey, id)} match={props.match}>
-                        <EntryList {...props} profile={user.profileObj} />
-                      </RememberSpace>}
-                  />
-                  <Route path='/edit/:id' render={props => <EntryPage profile={user.profileObj} {...props} />} />
+                    <Route exact path='/select' render={props => <SpaceSelector {...props} />} />
+                    <Route path='/space/:id' render={
+                      props =>
+                        <RememberSpace write={id => write(storageKey, id)} match={props.match}>
+                          <EntryList {...props} profile={user.profileObj} />
+                        </RememberSpace>}
+                    />
+                    <Route path='/edit/:id' render={props => <EntryPage profile={user.profileObj} {...props} />} />
 
-                  <Route exact path='/'>
-                    { lastSpaceId
-                      ? <Redirect to={`/space/${lastSpaceId}`}/>
-                      : <Redirect to='/select'/>
-                    }
-                  </Route>
+                    <Route exact path='/'>
+                      { lastSpaceId
+                        ? <Redirect to={`/space/${lastSpaceId}`}/>
+                        : <Redirect to='/select'/>
+                      }
+                    </Route>
 
-                </Switch>
-            </ApolloProvider> :
-            <Route path='/' render={props => <SignInForm {...props} onLogin={user => {
-              write(tokenIdStorageKey, user.tokenId)
-              setUser(user)
-            }}/>} />
-          }
-          <Route component={NotFound} />
-        </Switch>
-      </HashRouter>
-    </div>
+                  </Switch>
+              </ApolloProvider> :
+              <Route path='/' render={props => <SignInForm {...props} onLogin={user => {
+                write(tokenIdStorageKey, user.tokenId)
+                setUser(user)
+              }}/>} />
+            }
+            <Route component={NotFound} />
+          </Switch>
+        </HashRouter>
+      </div>
+    </ProfileContext.Provider>
   );
 }
 

@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useContext } from 'react'
 
 import {
   AppBar,
@@ -8,6 +8,7 @@ import {
 } from '@material-ui/core'
 
 import {makeStyles} from '@material-ui/core/styles'
+import ProfileContext from '../ProfileContext'
 
 const useStyles = makeStyles({
   appBar: {
@@ -25,8 +26,9 @@ const useStyles = makeStyles({
   },
 })
 
-const Layout = ({profile, toolbarIcon, children}) => {
+const Layout = ({toolbarIcon, children}) => {
   const classes = useStyles()
+  const profile = useContext(ProfileContext)
 
   return <>
     <AppBar className={classes.appBar}>

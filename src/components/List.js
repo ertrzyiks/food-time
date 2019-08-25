@@ -104,7 +104,7 @@ function EntryList({match, profile}) {
   const onAddEntry = () => createEntry({ variables: { time: Math.round(Date.now() / 1000), spaceId}})
 
   return (
-    <Layout profile={profile}>
+    <Layout>
       { (error || creationError) && <ShowError message={error || creationError} /> }
 
       <Container className={classes.listWrapper} maxWidth="sm">
