@@ -14,9 +14,9 @@ export function formatElapsedTime(from, to) {
   const hours = differenceInHours(from, to)
   let minutes = differenceInMinutes(from, to) % 60
 
-  if (minutes < 10) {
-    minutes = `0${minutes}`
+  if (hours < 1) {
+    return `${minutes}min`
   }
 
-  return `${hours}:${minutes}h`
+  return `${hours}h ${minutes}min`
 }
