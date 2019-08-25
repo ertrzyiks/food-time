@@ -9,6 +9,8 @@ import {
   ListItemText
 } from '@material-ui/core'
 
+import Layout from './Layout'
+
 import { GET_SPACES } from '../queries'
 import { useQuery } from 'react-apollo-hooks'
 
@@ -19,7 +21,7 @@ function SpaceSelector({history}) {
     history.push(`/space/${id}`)
   }
 
-  return (
+  return (<Layout>
     <Container maxWidth="sm">
       { loading && <CircularProgress/>}
       { !loading &&
@@ -34,8 +36,7 @@ function SpaceSelector({history}) {
         </Paper>
       }
     </Container>
-
-  )
+  </Layout>)
 }
 
 export default SpaceSelector

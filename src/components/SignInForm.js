@@ -2,9 +2,10 @@ import React, { useState, useEffect } from 'react'
 import { GoogleLogin } from 'react-google-login'
 import { CircularProgress } from '@material-ui/core'
 
+import Layout from './Layout'
 import { makeStyles } from '@material-ui/core/styles'
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles({
   root: {
     position: 'relative',
     minHeight: 40
@@ -18,7 +19,7 @@ const useStyles = makeStyles(theme => ({
     right: 0,
     zIndex: 1
   }
-}))
+})
 
 const SignInForm = ({ onLogin }) => {
   const classes = useStyles()
@@ -37,10 +38,7 @@ const SignInForm = ({ onLogin }) => {
     return () => clearTimeout(timeout)
   })
 
-  return  <>
-    <header className="App-header">
-    </header>
-
+  return  <Layout>
     <div className={classes.root}>
       { loading && <div className={classes.loader}><CircularProgress /></div> }
       <GoogleLogin
@@ -52,7 +50,7 @@ const SignInForm = ({ onLogin }) => {
         cookiePolicy='single_host_origin'
       />
     </div>
-  </>
+  </Layout>
 }
 
 export default SignInForm

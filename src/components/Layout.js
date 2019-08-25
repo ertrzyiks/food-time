@@ -4,7 +4,8 @@ import {
   AppBar,
   Avatar,
   Toolbar,
-  Typography
+  Typography,
+  Box
 } from '@material-ui/core'
 
 import {makeStyles} from '@material-ui/core/styles'
@@ -39,13 +40,17 @@ const Layout = ({toolbarIcon, children}) => {
           Food time
         </Typography>
 
-        <Avatar alt="Profile picture" src={profile.imageUrl} className={classes.avatar} />
+        {profile &&
+        <Avatar alt="Profile picture" src={profile.imageUrl} className={classes.avatar}/>
+        }
       </Toolbar>
     </AppBar>
 
     <Toolbar className={classes.toolbar}/>
 
+    <Box m={2}>
     {children}
+    </Box>
   </>
 }
 
