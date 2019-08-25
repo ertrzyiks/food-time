@@ -81,7 +81,7 @@ const Layout = ({toolbarIcon, children}) => {
 
     <Toolbar className={classes.toolbar}/>
 
-    <Box m={2}>
+    <Box my={2}>
     {children}
     </Box>
   </>
