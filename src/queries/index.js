@@ -1,5 +1,7 @@
 export * from './getEntries'
 export * from './getEntry'
+export * from './createEntry'
 export * from './updateEntry'
 export * from './removeEntry'
 export * from './getSpaces'
+export * from './createSpace'

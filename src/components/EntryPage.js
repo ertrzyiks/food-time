@@ -31,7 +31,7 @@ import { debounce } from '../utils'
 import { SpacePage } from '../routing'
 
 import {
-  GET_ENTIRES,
+  GET_ENTRIES,
   GET_ENTRY,
   UPDATE_ENTRY_TIME,
   REMOVE_ENTRY
@@ -57,7 +57,7 @@ function EntryPage({match}) {
       let listData = null
 
       try {
-        listData = store.readQuery({query: GET_ENTIRES, variables: {spaceId}})
+        listData = store.readQuery({query: GET_ENTRIES, variables: {spaceId}})
       } catch (e) {
         // Reading error, do nothing
       }
@@ -67,7 +67,7 @@ function EntryPage({match}) {
       }
 
       store.writeQuery({
-        query: GET_ENTIRES, variables: {spaceId}, data: {
+        query: GET_ENTRIES, variables: {spaceId}, data: {
           entries: listData.entries.filter(entry => {
             return entry.id !== removeEntry.removedId
           })

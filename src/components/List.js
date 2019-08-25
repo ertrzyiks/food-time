@@ -26,17 +26,7 @@ import addMinutes from 'date-fns/addMinutes'
 
 import { formatElapsedTime } from '../time'
 
-import { GET_ENTIRES } from '../queries'
-
-const CREATE_ENTRY = gql`
-  mutation CreateEntry($spaceId: String!, $time: Int!) {
-    createEntry(spaceId: $spaceId, time: $time) {
-      id
-      time
-      extra_food
-    }
-  }
-`
+import { GET_ENTRIES, CREATE_ENTRY } from '../queries'
 
 const useStyles = makeStyles(theme => ({
   fab: {
@@ -51,12 +41,12 @@ const useStyles = makeStyles(theme => ({
 }))
 
 
-function EntryList({match, profile}) {
+function EntryList({match}) {
   const classes = useStyles();
 
   const spaceId = match.params.id
 
-  const { loading, data, error } = useQuery(GET_ENTIRES, {variables: {spaceId}})
+  const { loading, data, error } = useQuery(GET_ENTRIES, {variables: {spaceId}})
   const hasData = !loading && !error
 
   const [createEntry, {loading: creationLoading, error: creationError}] = useMutation(CREATE_ENTRY, {
@@ -109,7 +99,7 @@ function EntryList({match, profile}) {
 
       <Container className={classes.listWrapper} maxWidth="sm">
         <Fab variant='extended' color='primary' aria-label="delete" className={classes.fab} onClick={onAddEntry} disabled={creationLoading}>
-          <AddIcon className={classes.extendedIcon} />
+          <AddIcon />
           New feeding
         </Fab>
 

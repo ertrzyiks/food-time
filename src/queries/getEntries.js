@@ -1,6 +1,6 @@
 import gql from "graphql-tag";
 
-export const GET_ENTIRES = gql`
+export const GET_ENTRIES = gql`
   query getEntries($spaceId: String!) {
     entries(spaceId: $spaceId) {
       id
