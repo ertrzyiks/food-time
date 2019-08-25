@@ -53,9 +53,7 @@ function EntryList({match}) {
     refetchQueries: ['getEntries']
   })
 
-  const sortedDataEntries = hasData && data.entries.slice().sort((e1, e2) => e2.time - e1.time)
-
-  const entries = hasData && sortedDataEntries.reverse().reduce((acc, entry) => {
+  const entries = hasData && data.entries.slice().reverse().reduce((acc, entry) => {
     if (acc.length > 0) {
       const last = acc[acc.length - 1]
 

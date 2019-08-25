@@ -45,6 +45,27 @@ const useStyles = makeStyles((theme) =>
   }),
 )
 
+const updateGetEntriesCache = (store, spaceId, fn) => {
+  let listData = null
+
+  try {
+    listData = store.readQuery({query: GET_ENTRIES, variables: {spaceId}})
+  } catch (e) {
+    // Reading error, do nothing
+  }
+
+  if (!listData) {
+    return
+  }
+
+  store.writeQuery({
+    query: GET_ENTRIES, variables: {spaceId}, data: {
+      entries: fn(listData.entries)
+
+    }
+  })
+}
+
 function EntryPage({match}) {
   const { id } = match.params
 
@@ -54,24 +75,10 @@ function EntryPage({match}) {
   const [removeEntry, {data: mutationData}] = useMutation(REMOVE_ENTRY, {
     variables: {id},
     update: (store, { data: {removeEntry} }) => {
-      let listData = null
-
-      try {
-        listData = store.readQuery({query: GET_ENTRIES, variables: {spaceId}})
-      } catch (e) {
-        // Reading error, do nothing
-      }
-
-      if (!listData) {
-        return
-      }
-
-      store.writeQuery({
-        query: GET_ENTRIES, variables: {spaceId}, data: {
-          entries: listData.entries.filter(entry => {
-            return entry.id !== removeEntry.removedId
-          })
-        }
+      updateGetEntriesCache(store, spaceId, (entries) => {
+        return entries.filter(entry => {
+          return entry.id !== removeEntry.removedId
+        })
       })
     },
   })
@@ -87,6 +94,11 @@ function EntryPage({match}) {
       variables: {
         id,
         ...variables
+      },
+      update: (store) => {
+        updateGetEntriesCache(store, spaceId, (entries) => {
+          return entries.sort((e1, e2) => e2.time - e1.time)
+        })
       }
     })
   }), [client, id])
@@ -119,7 +131,7 @@ function EntryPage({match}) {
     return <Redirect to={SpacePage.path({id: spaceId})}/>
   }
 
-  const backButton = (
+  const backButton = spaceId && (
     <IconButton
     edge='start'
     color='inherit'
