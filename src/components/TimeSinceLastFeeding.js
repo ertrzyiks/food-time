@@ -1,5 +1,6 @@
 import React from 'react'
 import InfoIcon from '@material-ui/icons/Info'
+import WarningIcon from '@material-ui/icons/Warning';
 import {makeStyles} from '@material-ui/core/styles'
 import {SnackbarContent, Typography} from '@material-ui/core'
 
@@ -34,7 +35,11 @@ const SnackbarContentWrapper = (props) => {
       aria-describedby="client-snackbar"
       message={
         <span id="client-snackbar" className={classes.message}>
-          <InfoIcon className={classes.icon}/>
+          {
+            variant === 'info'
+            ? <InfoIcon className={classes.icon}/>
+            : <WarningIcon className={classes.icon}/>
+          }
           {children}
         </span>
       }
