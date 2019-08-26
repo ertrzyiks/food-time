@@ -24,6 +24,8 @@ import AddIcon from '@material-ui/icons/Add'
 import RemoveIcon from '@material-ui/icons/Remove'
 import ArrowBackIcon from '@material-ui/icons/ArrowBack'
 import Layout from './Layout'
+import FormControlLabel from '@material-ui/core/FormControlLabel'
+import Checkbox from '@material-ui/core/Checkbox'
 import { createStyles, makeStyles } from '@material-ui/core/styles'
 import { formatTime, formatDay } from '../time'
 import { debounce } from '../utils'
@@ -85,6 +87,7 @@ function EntryPage({match}) {
 
   const [date, setDate] = useState(null)
   const [extraFood, setExtraFood] = useState(null)
+  const [isBottleOnly, setIsBottleOnly] = useState(null)
 
   const client = useApolloClient()
 
@@ -111,6 +114,10 @@ function EntryPage({match}) {
     setExtraFood(data.entry.extra_food)
   }
 
+  if (isBottleOnly === null && !loading) {
+    setIsBottleOnly(data.entry.type === 'bottle')
+  }
+
   const updateDate = (date) => {
     setDate(date)
     updateEntry({
@@ -118,11 +125,34 @@ function EntryPage({match}) {
     })
   }
 
+  const getFeedingType = (extraFoodInput, isBottleOnlyInput) => {
+    if (extraFoodInput === 0) {
+      return 'breast'
+    }
+
+    return isBottleOnlyInput
+      ? 'bottle'
+      : 'mixed'
+  }
+
   const updateExtraFood = (value) => {
     setExtraFood(value)
     updateEntry({
-      extra_food: value
+      extra_food: value,
+      type: getFeedingType(value, isBottleOnly)
     })
+  }
+
+  const updateFeedingType = event => {
+    const { checked } = event.target
+    setIsBottleOnly(checked)
+
+    const entryType = getFeedingType(extraFood, checked)
+
+    updateEntry({
+      type: entryType
+    })
+
   }
 
   const classes = useStyles()
@@ -216,6 +246,21 @@ function EntryPage({match}) {
                     min={0}
                     max={150}
                     onChange={(e, value) => updateExtraFood(value)}
+                  />
+                </Paper>
+              </Grid>
+
+              <Grid item xs={12} md={4}>
+                <Paper className={classes.root}>
+                  <FormControlLabel
+                    control={
+                      <Checkbox
+                        checked={isBottleOnly}
+                        onChange={updateFeedingType}
+                        color="primary"
+                      />
+                    }
+                    label="Bottle only"
                   />
                 </Paper>
               </Grid>
