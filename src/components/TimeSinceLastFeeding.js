@@ -14,7 +14,10 @@ const useStyles = makeStyles(theme => ({
     backgroundColor: theme.palette.error.dark,
   },
   messageBox: {
-    marginBottom: 20
+    marginBottom: 20,
+    position: 'sticky',
+    top: 70,
+    zIndex:10
   },
   message: {
     display: 'flex',
@@ -49,6 +52,7 @@ const SnackbarContentWrapper = (props) => {
 
 const TimeSinceLastFeeding = ({lastFeedingTime, nextFeedingTime}) => (
   <SnackbarContentWrapper
+    class='mui-fixed'
     variant={Date.now() > nextFeedingTime ? 'error' : 'info'}>
     It's been&nbsp;
     <Typography variant="subtitle1" component="span">{formatElapsedTime(new Date(), new Date(lastFeedingTime))}</Typography>
