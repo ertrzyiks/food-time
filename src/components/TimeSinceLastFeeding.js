@@ -1,10 +1,12 @@
-import React from 'react'
+import React, { useState } from 'react'
 import InfoIcon from '@material-ui/icons/Info'
 import WarningIcon from '@material-ui/icons/Warning';
 import {makeStyles} from '@material-ui/core/styles'
 import {SnackbarContent, Typography} from '@material-ui/core'
+import differenceInMinutes from 'date-fns/differenceInMinutes'
 
 import {formatElapsedTime} from '../time'
+import {useInterval} from '../useInterval';
 
 const useStyles = makeStyles(theme => ({
   info: {
@@ -50,14 +52,24 @@ const SnackbarContentWrapper = (props) => {
   );
 }
 
-const TimeSinceLastFeeding = ({lastFeedingTime, nextFeedingTime}) => (
-  <SnackbarContentWrapper
+
+
+const TimeSinceLastFeeding = ({lastFeedingTime, nextFeedingTime}) => {
+  let [count, setCount] = useState(0);
+
+  useInterval(() => {
+    setCount(count + 1)
+  }, 30 * 1000)
+
+  const infoText = differenceInMinutes(new Date(), new Date(lastFeedingTime)) > 5
+  ? <>It's been&nbsp;<Typography variant="subtitle1" component="span">{formatElapsedTime(new Date(), new Date(lastFeedingTime))}</Typography>&nbsp;since last feeding </>
+  : <>Feeding in progress...</>
+
+  return <SnackbarContentWrapper
     class='mui-fixed'
     variant={Date.now() > nextFeedingTime ? 'error' : 'info'}>
-    It's been&nbsp;
-    <Typography variant="subtitle1" component="span">{formatElapsedTime(new Date(), new Date(lastFeedingTime))}</Typography>
-    &nbsp;since last feeding
+    {infoText}
   </SnackbarContentWrapper>
-)
+}
 
 export default TimeSinceLastFeeding
