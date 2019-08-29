@@ -8,6 +8,7 @@ export const GET_ENTRY = gql`
       extra_food
       spaceId
       type 
+      vitamin
     }
   }
 `
