@@ -137,9 +137,11 @@ function EntryPage({match}) {
 
   const updateExtraFood = (value) => {
     setExtraFood(value)
+    setIsBottleOnly(true)
+
     updateEntry({
       extra_food: value,
-      type: getFeedingType(value, isBottleOnly)
+      type: getFeedingType(value, true)
     })
   }
 
@@ -152,7 +154,6 @@ function EntryPage({match}) {
     updateEntry({
       type: entryType
     })
-
   }
 
   const classes = useStyles()
@@ -250,7 +251,7 @@ function EntryPage({match}) {
                 </Paper>
               </Grid>
 
-              <Grid item xs={12} md={4}>
+              <Grid item xs={12} md={12}>
                 <Paper className={classes.root}>
                   <FormControlLabel
                     control={

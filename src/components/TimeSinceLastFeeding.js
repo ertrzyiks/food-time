@@ -63,7 +63,7 @@ const TimeSinceLastFeeding = ({lastFeedingTime, nextFeedingTime}) => {
 
   const infoText = differenceInMinutes(new Date(), new Date(lastFeedingTime)) > 5
   ? <>It's been&nbsp;<Typography variant="subtitle1" component="span">{formatElapsedTime(new Date(), new Date(lastFeedingTime))}</Typography>&nbsp;since last feeding </>
-  : <>Feeding in progress...</>
+  : <>Feeding in progress</>
 
   return <SnackbarContentWrapper
     class='mui-fixed'
