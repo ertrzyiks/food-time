@@ -1,5 +1,4 @@
-import React from 'react';
-import gql from 'graphql-tag'
+import React from 'react'
 import { useQuery, useMutation } from 'react-apollo-hooks'
 
 import AddIcon from '@material-ui/icons/Add'
@@ -27,6 +26,7 @@ import addMinutes from 'date-fns/addMinutes'
 import { formatElapsedTime } from '../time'
 
 import { GET_ENTRIES, CREATE_ENTRY } from '../queries'
+import useEventListener from '../useEventListener'
 
 const useStyles = makeStyles(theme => ({
   fab: {
@@ -46,8 +46,17 @@ function EntryList({match}) {
 
   const spaceId = match.params.id
 
-  const { loading, data, error } = useQuery(GET_ENTRIES, {variables: {spaceId}})
+  const { loading, data, error, refetch } = useQuery(GET_ENTRIES, {variables: {spaceId}})
   const hasData = !loading && !error
+
+  const onChange = React.useCallback(() => {
+    console.log(document.hidden)
+    if (document.hidden === false) {
+      refetch()
+    }
+  }, [refetch])
+
+  useEventListener('visibilitychange', onChange, document)
 
   const [createEntry, {loading: creationLoading, error: creationError}] = useMutation(CREATE_ENTRY, {
     refetchQueries: ['getEntries']
