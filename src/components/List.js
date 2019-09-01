@@ -50,7 +50,6 @@ function EntryList({match}) {
   const hasData = !loading && !error
 
   const onChange = React.useCallback(() => {
-    console.log(document.hidden)
     if (document.hidden === false) {
       refetch()
     }
