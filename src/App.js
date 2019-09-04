@@ -24,25 +24,11 @@ const RememberSpace = ({match, write, children}) => {
 
 function App({storage}) {
   const storageKey = 'food-time-space-id'
-  const tokenIdStorageKey = 'food-time-token-id'
   const { read, write } = storage
 
   const lastSpaceId = read(storageKey)
 
   const [user, setUser] = useState(null)
-
-  useEffect(() => {
-    const tokenHandlerId = setInterval(() => {
-      if (user) {
-        return user.reloadAuthResponse()
-          .then(res => {
-            write(tokenIdStorageKey, res.id_token)
-          })
-      }
-    }, 5 * 60 * 1000)
-
-    return () => clearInterval(tokenHandlerId)
-  }, [write, user])
 
   return (
     <ProfileContext.Provider value={user && user.profileObj}>
@@ -51,7 +37,7 @@ function App({storage}) {
           <Switch>
             {
               user ?
-                <ApolloProvider client={getClient(() => read(tokenIdStorageKey))}>
+                <ApolloProvider client={getClient(user)}>
                   <Switch>
 
                     <Route exact path={SelectPage.pattern} render={props => <SpaceSelector {...props} />} />
@@ -73,7 +59,6 @@ function App({storage}) {
                   </Switch>
               </ApolloProvider> :
               <Route path={HomePage.pattern} render={props => <SignInForm {...props} onLogin={user => {
-                write(tokenIdStorageKey, user.tokenId)
                 setUser(user)
               }}/>} />
             }
