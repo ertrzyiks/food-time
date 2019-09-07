@@ -33,12 +33,15 @@ const useStyles = makeStyles(theme => ({
   subheader_total: {
     float: 'right'
   },
-  time_column: {
+  narrow_column: {
     flex: 'initial',
     marginRight: 35
   },
   source_column: {
     color: '#644889',
+  },
+  vitamin_column: {
+    color: '#b17714',
   }
 }))
 
@@ -145,19 +148,20 @@ const GrouppedList = ({groupedEntries}) => {
               <span className={classes.subheader_total}>(total {getTotalEntries(group)})</span>
             </ListSubheader>
 
-            {group.map(({id, time, extra_food, type, meantime, source, isSuggested}) => {
-
-
+            {group.map(({id, time, extra_food, type, vitamin, meantime, source, isSuggested}) => {
               return isSuggested
                   ? <SuggestedListItem key={id} time={time}/>
                   : <ListItem key={id}>
                       <IconGroup type={type} extra_food={extra_food}/>
 
-                      <ListItemText secondary={meantime} className={classes.time_column}>
+                      <ListItemText secondary={meantime} className={classes.narrow_column}>
                         {formatTime(time * 1000)}
                       </ListItemText>
-                      <ListItemText className={classes.source_column}>
+                      <ListItemText className={[classes.source_column, classes.narrow_column].join(' ')}>
                         {breastFeedingSourceMap[source]}
+                      </ListItemText>
+                      <ListItemText className={[classes.vitamin_column, classes.narrow_column].join(' ')}>
+                        {vitamin ? 'Vit D3' : ''}
                       </ListItemText>
                       <ListItemSecondaryAction>
                         {

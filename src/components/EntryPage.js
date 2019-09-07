@@ -92,6 +92,7 @@ function EntryPage({match}) {
   const [extraFood, setExtraFood] = useState(null)
   const [isBottleOnly, setIsBottleOnly] = useState(null)
   const [breastFeedingSource, setBreastFeedingSource] = useState(null)
+  const [vitamin, setVitamin] = useState(null)
 
   const client = useApolloClient()
 
@@ -124,6 +125,10 @@ function EntryPage({match}) {
 
   if (breastFeedingSource === null && !loading) {
     setBreastFeedingSource(data.entry.source)
+  }
+
+  if (vitamin === null && !loading) {
+    setVitamin(data.entry.vitamin)
   }
 
   const updateDate = (date) => {
@@ -171,6 +176,14 @@ function EntryPage({match}) {
     })
   }
 
+  const updateVitamin = (event, newVitamin) => {
+    setVitamin(newVitamin === "1")
+
+    updateEntry({
+      vitamin: newVitamin === "1"
+    })
+  }
+
   const classes = useStyles()
 
   if (mutationData) {
@@ -190,9 +203,9 @@ function EntryPage({match}) {
     <Layout toolbarIcon={backButton}>
       <header className="App-header">
         { !loading &&
-          <Typography variant='h5'>
-            {formatTime(date)} {formatDay(date)}
-          </Typography>
+        <Typography variant='h5'>
+          {formatTime(date)} {formatDay(date)}
+        </Typography>
         }
       </header>
 
@@ -292,6 +305,19 @@ function EntryPage({match}) {
                     <ToggleButton value="right">Right</ToggleButton>
                     <ToggleButton value="both">Both</ToggleButton>
                     <ToggleButton value="none">None</ToggleButton>
+                  </ToggleButtonGroup>
+                </Paper>
+              </Grid>
+
+              <Grid item item xs={12} md={12}>
+                <Paper className={classes.root}>
+                  <Typography paragraph>
+                    Got vitamin?
+                  </Typography>
+
+                  <ToggleButtonGroup value={vitamin ? "1" : "0"} exclusive onChange={updateVitamin}>
+                    <ToggleButton value="1">Yes</ToggleButton>
+                    <ToggleButton value="0">No</ToggleButton>
                   </ToggleButtonGroup>
                 </Paper>
               </Grid>
