@@ -1007,6 +1007,17 @@
   dependencies:
     "@babel/runtime" "^7.2.0"
 
+"@material-ui/lab@^4.0.0-alpha.25":
+  version "4.0.0-alpha.25"
+  resolved "https://registry.yarnpkg.com/@material-ui/lab/-/lab-4.0.0-alpha.25.tgz#243ed39c3b26bcc1b545a32cc97aba53bae2c078"
+  integrity sha512-KaySMP6SLtPFalpFClcMK3sZO9UgzCzpFZ41UiESP0FvebORbH9NAD/TwYDyr+o2vghC+lzzRLRtr5HM3V8Mrg==
+  dependencies:
+    "@babel/runtime" "^7.4.4"
+    "@material-ui/utils" "^4.4.0"
+    clsx "^1.0.4"
+    prop-types "^15.7.2"
+    warning "^4.0.3"
+
 "@material-ui/styles@^4.2.0":
   version "4.3.0"
   resolved "https://registry.yarnpkg.com/@material-ui/styles/-/styles-4.3.0.tgz#27f11fbf061d8a20ad5703acb0dbb0e69cc00345"
@@ -1048,6 +1059,15 @@
 "@material-ui/utils@^4.1.0":
   version "4.3.0"
   resolved "https://registry.yarnpkg.com/@material-ui/utils/-/utils-4.3.0.tgz#ea7f09815c792e80f270ef8b916517c3f9caba13"
+  dependencies:
+    "@babel/runtime" "^7.4.4"
+    prop-types "^15.7.2"
+    react-is "^16.8.6"
+
+"@material-ui/utils@^4.4.0":
+  version "4.4.0"
+  resolved "https://registry.yarnpkg.com/@material-ui/utils/-/utils-4.4.0.tgz#9275421e2798a067850d201212d46f12725828ad"
+  integrity sha512-UXoQVwArQEQWXxf2FPs0iJGT+MePQpKr0Qh0CPoLc1OdF0GSMTmQczcqCzwZkeHxHAOq/NkIKM1Pb/ih1Avicg==
   dependencies:
     "@babel/runtime" "^7.4.4"
     prop-types "^15.7.2"
@@ -2360,7 +2380,7 @@ clone-deep@^2.0.1:
     kind-of "^6.0.0"
     shallow-clone "^1.0.0"
 
-clsx@^1.0.2:
+clsx@^1.0.2, clsx@^1.0.4:
   version "1.0.4"
   resolved "https://registry.yarnpkg.com/clsx/-/clsx-1.0.4.tgz#0c0171f6d5cb2fe83848463c15fcc26b4df8c2ec"
 
@@ -8866,7 +8886,7 @@ warning@^3.0.0:
   dependencies:
     loose-envify "^1.0.0"
 
-warning@^4.0.1:
+warning@^4.0.1, warning@^4.0.3:
   version "4.0.3"
   resolved "https://registry.yarnpkg.com/warning/-/warning-4.0.3.tgz#16e9e077eb8a86d6af7d64aa1e05fd85b4678ca3"
   dependencies:
