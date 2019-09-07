@@ -9,6 +9,7 @@ export const GET_ENTRIES = gql`
       spaceId
       type  
       vitamin
+      source
     }
   }
 `

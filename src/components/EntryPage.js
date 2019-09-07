@@ -19,6 +19,9 @@ import {
   Slider,
   IconButton
 } from '@material-ui/core'
+
+import { ToggleButton, ToggleButtonGroup } from '@material-ui/lab';
+
 import { useQuery, useMutation, useApolloClient } from 'react-apollo-hooks'
 import AddIcon from '@material-ui/icons/Add'
 import RemoveIcon from '@material-ui/icons/Remove'
@@ -88,6 +91,7 @@ function EntryPage({match}) {
   const [date, setDate] = useState(null)
   const [extraFood, setExtraFood] = useState(null)
   const [isBottleOnly, setIsBottleOnly] = useState(null)
+  const [breastFeedingSource, setBreastFeedingSource] = useState(null)
 
   const client = useApolloClient()
 
@@ -116,6 +120,10 @@ function EntryPage({match}) {
 
   if (isBottleOnly === null && !loading) {
     setIsBottleOnly(data.entry.type === 'bottle')
+  }
+
+  if (breastFeedingSource === null && !loading) {
+    setBreastFeedingSource(data.entry.source)
   }
 
   const updateDate = (date) => {
@@ -153,6 +161,13 @@ function EntryPage({match}) {
 
     updateEntry({
       type: entryType
+    })
+  }
+
+  const updateBreastFeedingSource = (event, source) => {
+    setBreastFeedingSource(source)
+    updateEntry({
+      source
     })
   }
 
@@ -263,6 +278,21 @@ function EntryPage({match}) {
                     }
                     label="Bottle only"
                   />
+                </Paper>
+              </Grid>
+
+              <Grid item item xs={12} md={12}>
+                <Paper className={classes.root}>
+                  <Typography paragraph>
+                    Breast feeding source
+                  </Typography>
+
+                  <ToggleButtonGroup value={breastFeedingSource} exclusive onChange={updateBreastFeedingSource}>
+                    <ToggleButton value="left">Left</ToggleButton>
+                    <ToggleButton value="right">Right</ToggleButton>
+                    <ToggleButton value="both">Both</ToggleButton>
+                    <ToggleButton value="none">None</ToggleButton>
+                  </ToggleButtonGroup>
                 </Paper>
               </Grid>
 
