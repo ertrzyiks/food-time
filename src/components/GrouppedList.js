@@ -32,6 +32,13 @@ const useStyles = makeStyles(theme => ({
   },
   subheader_total: {
     float: 'right'
+  },
+  time_column: {
+    flex: 'initial',
+    marginRight: 35
+  },
+  source_column: {
+    color: '#644889',
   }
 }))
 
@@ -108,6 +115,13 @@ const IconGroup = ({ type, extra_food }) => {
   )
 }
 
+const breastFeedingSourceMap = {
+  left: 'L',
+  right: 'R',
+  both: 'LR',
+  none: ''
+}
+
 const GrouppedList = ({groupedEntries}) => {
   const now = Date.now()
 
@@ -131,24 +145,29 @@ const GrouppedList = ({groupedEntries}) => {
               <span className={classes.subheader_total}>(total {getTotalEntries(group)})</span>
             </ListSubheader>
 
-            {group.map(({id, time, extra_food, type, meantime, isSuggested}) => {
-                return isSuggested
-                    ? <SuggestedListItem key={id} time={time}/>
-                    : <ListItem key={id}>
-                        <IconGroup type={type} extra_food={extra_food}/>
+            {group.map(({id, time, extra_food, type, meantime, source, isSuggested}) => {
 
-                        <ListItemText secondary={meantime}>
-                          {formatTime(time * 1000)}
-                        </ListItemText>
-                        <ListItemSecondaryAction>
-                          {
-                            (now - time * 1000 < A_DAY) &&
-                            <IconButton edge='end' aria-label='Comments' component={Link} to={`/edit/${id}`}>
-                              <Edit/>
-                            </IconButton>
-                          }
-                        </ListItemSecondaryAction>
-                      </ListItem>
+
+              return isSuggested
+                  ? <SuggestedListItem key={id} time={time}/>
+                  : <ListItem key={id}>
+                      <IconGroup type={type} extra_food={extra_food}/>
+
+                      <ListItemText secondary={meantime} className={classes.time_column}>
+                        {formatTime(time * 1000)}
+                      </ListItemText>
+                      <ListItemText className={classes.source_column}>
+                        {breastFeedingSourceMap[source]}
+                      </ListItemText>
+                      <ListItemSecondaryAction>
+                        {
+                          (now - time * 1000 < A_DAY) &&
+                          <IconButton edge='end' aria-label='Comments' component={Link} to={`/edit/${id}`}>
+                            <Edit/>
+                          </IconButton>
+                        }
+                      </ListItemSecondaryAction>
+                    </ListItem>
               }
             )}
           </CSSTransitionGroup>

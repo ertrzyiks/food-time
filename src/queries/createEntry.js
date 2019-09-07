@@ -6,6 +6,9 @@ export const CREATE_ENTRY = gql`
       id
       time
       extra_food
+      type  
+      vitamin
+      source
     }
   }
 `
