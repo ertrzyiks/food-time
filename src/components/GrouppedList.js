@@ -9,6 +9,7 @@ import { IconButton } from '@material-ui/core'
 import Edit from '@material-ui/icons/Edit'
 import DoneIcon from '@material-ui/icons/Done'
 import CloseIcon from '@material-ui/icons/Close'
+import CheckBoxOutlineBlankIcon from '@material-ui/icons/CheckBoxOutlineBlank'
 import {green, red} from '@material-ui/core/colors'
 
 import format from 'date-fns/format'
@@ -18,6 +19,8 @@ import { makeStyles } from '@material-ui/core/styles'
 import { CSSTransitionGroup } from 'react-transition-group'
 import SuggestedListItem from './SuggestedListItem'
 import IconGroup from './IconGroup'
+import { UPDATE_ENTRY } from '../queries'
+import { useMutation } from 'react-apollo-hooks'
 
 const A_DAY = 24 * 60 * 60 * 1000
 
@@ -73,12 +76,27 @@ const GrouppedList = ({groupedEntries}) => {
 
   const classes = useStyles()
 
+  const [updateEntry, {loading: updateLoading, error: updateError}] = useMutation(UPDATE_ENTRY, {
+    refetchQueries: ['getEntries']
+  })
+
+  const updateVitamin = (entry) => {
+    updateEntry({
+      variables: {
+        id: entry.id,
+        vitamin: true
+      }
+    })
+  }
+
   return (
     <List disablePadding className={classes.root}>
       {
         Object.entries(groupedEntries).map(([timestamp, group]) => {
-          const vitaminEntries = group.filter(({vitamin}) => vitamin)
+          const realEntries = group.filter(({isSuggested}) => !isSuggested)
+          const vitaminEntries = realEntries.filter(({vitamin}) => vitamin)
           const vitaminTime = vitaminEntries.length > 0 ? vitaminEntries[0].time * 1000 : null
+          const firstRealEntry = realEntries[0]
 
           return(
             <CSSTransitionGroup
@@ -93,6 +111,8 @@ const GrouppedList = ({groupedEntries}) => {
                     size='small'
                     label={`Vit D3 ${vitaminTime ? '(' + format(vitaminTime, 'HH:mm') + ')' : ''}`}
                     icon={vitaminTime ? <DoneIcon /> : <CloseIcon/>}
+                    deleteIcon={<CheckBoxOutlineBlankIcon />}
+                    onDelete={!vitaminTime && firstRealEntry ? () => updateVitamin(firstRealEntry) : null}
                     className={vitaminTime ? classes.green_chip : classes.red_chip}
                   />
                 </span>

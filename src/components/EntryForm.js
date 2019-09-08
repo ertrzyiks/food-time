@@ -32,7 +32,7 @@ import { SpacePage } from '../routing'
 
 import {
   GET_ENTRIES,
-  UPDATE_ENTRY_TIME,
+  UPDATE_ENTRY,
   REMOVE_ENTRY
 } from '../queries'
 import {formatDay, formatTime} from "../time";
@@ -92,7 +92,7 @@ function EntryForm({match, data}) {
 
   const updateEntry = useCallback(debounce(variables => {
     return client.mutate({
-      mutation: UPDATE_ENTRY_TIME,
+      mutation: UPDATE_ENTRY,
       variables: {
         id,
         ...variables
