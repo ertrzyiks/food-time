@@ -4,8 +4,12 @@ import ListItem from '@material-ui/core/ListItem'
 import ListItemText from '@material-ui/core/ListItemText'
 import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction'
 import ListSubheader from '@material-ui/core/ListSubheader'
+import Chip from '@material-ui/core/Chip'
 import { IconButton } from '@material-ui/core'
 import Edit from '@material-ui/icons/Edit'
+import DoneIcon from '@material-ui/icons/Done'
+import CloseIcon from '@material-ui/icons/Close'
+import {green, red} from '@material-ui/core/colors'
 
 import format from 'date-fns/format'
 import {Link} from 'react-router-dom'
@@ -32,6 +36,9 @@ const useStyles = makeStyles(theme => ({
   subheader_total: {
     float: 'right'
   },
+  subheader_vitamin: {
+    marginLeft: 35
+  },
   narrow_column: {
     flex: 'initial',
     marginRight: 35
@@ -41,6 +48,12 @@ const useStyles = makeStyles(theme => ({
   },
   vitamin_column: {
     color: '#b17714',
+  },
+  green_chip: {
+    backgroundColor: green[100]
+  },
+  red_chip: {
+    backgroundColor: red[100]
   }
 }))
 
@@ -63,21 +76,34 @@ const GrouppedList = ({groupedEntries}) => {
   return (
     <List disablePadding className={classes.root}>
       {
-        Object.entries(groupedEntries).map(([timestamp, group]) => (
-          <CSSTransitionGroup
-            key={timestamp}
-            transitionName="example"
-            transitionEnterTimeout={500}
-            transitionLeaveTimeout={300}>
-            <ListSubheader className={classes.subheader}>
-              {format(parseInt(timestamp, 10), 'd MMM, yyyy')}
-              <span className={classes.subheader_total}>(total {getTotalEntries(group)})</span>
-            </ListSubheader>
+        Object.entries(groupedEntries).map(([timestamp, group]) => {
+          const vitaminEntries = group.filter(({vitamin}) => vitamin)
+          const vitaminTime = vitaminEntries.length > 0 ? vitaminEntries[0].time * 1000 : null
 
-            {group.map(({id, time, extra_food, type, vitamin, meantime, source, isSuggested}) => {
-              return isSuggested
-                  ? <SuggestedListItem key={id} time={time} className={classes.item}/>
-                  : <ListItem key={id}>
+          return(
+            <CSSTransitionGroup
+              key={timestamp}
+              transitionName="example"
+              transitionEnterTimeout={500}
+              transitionLeaveTimeout={300}>
+              <ListSubheader className={classes.subheader}>
+                {format(parseInt(timestamp, 10), 'd MMM, yyyy')}
+                <span className={classes.subheader_vitamin}>
+                  <Chip
+                    size='small'
+                    label={`Vit D3 ${vitaminTime ? '(' + format(vitaminTime, 'HH:mm') + ')' : ''}`}
+                    icon={vitaminTime ? <DoneIcon /> : <CloseIcon/>}
+                    className={vitaminTime ? classes.green_chip : classes.red_chip}
+                  />
+                </span>
+
+                <span className={classes.subheader_total}>(total {getTotalEntries(group)})</span>
+              </ListSubheader>
+
+              {group.map(({id, time, extra_food, type, vitamin, meantime, source, isSuggested}) => {
+                  return isSuggested
+                    ? <SuggestedListItem key={id} time={time} className={classes.item}/>
+                    : <ListItem key={id}>
                       <IconGroup type={type} extra_food={extra_food}/>
 
                       <ListItemText secondary={meantime} className={classes.narrow_column}>
@@ -98,10 +124,10 @@ const GrouppedList = ({groupedEntries}) => {
                         }
                       </ListItemSecondaryAction>
                     </ListItem>
-              }
-            )}
-          </CSSTransitionGroup>
-        ))
+                }
+              )}
+            </CSSTransitionGroup>
+          )})
       }
     </List>
   )
