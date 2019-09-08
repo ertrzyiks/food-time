@@ -30,7 +30,7 @@ function EntryPage({match}) {
     <IconButton
     edge='start'
     color='inherit'
-    component={props => <RouterLink {...props} to={SpacePage.path({id: spaceId})}/>}>
+    component={React.forwardRef((props, ref) => <RouterLink {...props} ref={ref} to={SpacePage.path({id: spaceId})}/>)}>
       <ArrowBackIcon/>
     </IconButton>
   )
