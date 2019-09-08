@@ -4,13 +4,8 @@ import ListItem from '@material-ui/core/ListItem'
 import ListItemText from '@material-ui/core/ListItemText'
 import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction'
 import ListSubheader from '@material-ui/core/ListSubheader'
-import Chip from '@material-ui/core/Chip'
 import { IconButton } from '@material-ui/core'
 import Edit from '@material-ui/icons/Edit'
-import DoneIcon from '@material-ui/icons/Done'
-import CloseIcon from '@material-ui/icons/Close'
-import CheckBoxOutlineBlankIcon from '@material-ui/icons/CheckBoxOutlineBlank'
-import {green, red} from '@material-ui/core/colors'
 
 import format from 'date-fns/format'
 import {Link} from 'react-router-dom'
@@ -19,8 +14,7 @@ import { makeStyles } from '@material-ui/core/styles'
 import { CSSTransitionGroup } from 'react-transition-group'
 import SuggestedListItem from './SuggestedListItem'
 import IconGroup from './IconGroup'
-import { UPDATE_ENTRY } from '../queries'
-import { useMutation } from 'react-apollo-hooks'
+import VitaminChip from './VitaminChip'
 
 const A_DAY = 24 * 60 * 60 * 1000
 
@@ -51,12 +45,6 @@ const useStyles = makeStyles(theme => ({
   },
   vitamin_column: {
     color: '#b17714',
-  },
-  green_chip: {
-    backgroundColor: green[100]
-  },
-  red_chip: {
-    backgroundColor: red[100]
   }
 }))
 
@@ -76,28 +64,10 @@ const GrouppedList = ({groupedEntries}) => {
 
   const classes = useStyles()
 
-  const [updateEntry, {loading: updateLoading, error: updateError}] = useMutation(UPDATE_ENTRY, {
-    refetchQueries: ['getEntries']
-  })
-
-  const updateVitamin = (entry) => {
-    updateEntry({
-      variables: {
-        id: entry.id,
-        vitamin: true
-      }
-    })
-  }
-
   return (
     <List disablePadding className={classes.root}>
       {
         Object.entries(groupedEntries).map(([timestamp, group]) => {
-          const realEntries = group.filter(({isSuggested}) => !isSuggested)
-          const vitaminEntries = realEntries.filter(({vitamin}) => vitamin)
-          const vitaminTime = vitaminEntries.length > 0 ? vitaminEntries[0].time * 1000 : null
-          const firstRealEntry = realEntries[0]
-
           return(
             <CSSTransitionGroup
               key={timestamp}
@@ -107,14 +77,7 @@ const GrouppedList = ({groupedEntries}) => {
               <ListSubheader className={classes.subheader}>
                 {format(parseInt(timestamp, 10), 'd MMM, yyyy')}
                 <span className={classes.subheader_vitamin}>
-                  <Chip
-                    size='small'
-                    label={`Vit D3 ${vitaminTime ? '(' + format(vitaminTime, 'HH:mm') + ')' : ''}`}
-                    icon={vitaminTime ? <DoneIcon /> : <CloseIcon/>}
-                    deleteIcon={<CheckBoxOutlineBlankIcon />}
-                    onDelete={!vitaminTime && firstRealEntry ? () => updateVitamin(firstRealEntry) : null}
-                    className={vitaminTime ? classes.green_chip : classes.red_chip}
-                  />
+                  <VitaminChip group={group}/>
                 </span>
 
                 <span className={classes.subheader_total}>(total {getTotalEntries(group)})</span>
