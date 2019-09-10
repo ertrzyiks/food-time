@@ -41,8 +41,8 @@ const useStyles = makeStyles(theme => ({
 }))
 
 
-function EntryList({match}) {
-  const classes = useStyles();
+function EntryList({match, showNextEstimatedFeeding}) {
+  const classes = useStyles()
 
   const spaceId = match.params.id
 
@@ -74,7 +74,7 @@ function EntryList({match}) {
     }
   }, []).reverse()
 
-  if (entries.length > 0) {
+  if (showNextEstimatedFeeding && entries.length > 0) {
     const theMostRecent = entries[0]
     const theMostRecentDate = new Date(theMostRecent.time * 1000)
     const hours = theMostRecentDate.getHours()

@@ -44,7 +44,7 @@ function App({storage}) {
                     <Route path={SpacePage.pattern} render={
                       props =>
                         <RememberSpace write={id => write(storageKey, id)} match={props.match}>
-                          <EntryList {...props} profile={user.profileObj} />
+                          <EntryList {...props} profile={user.profileObj} showNextEstimatedFeeding={false} />
                         </RememberSpace>}
                     />
                     <Route path={EditPage.pattern} render={props => <EntryPage {...props} />} />
