@@ -35,7 +35,8 @@ import {
   UPDATE_ENTRY,
   REMOVE_ENTRY
 } from '../queries'
-import {formatDay, formatTime} from "../time";
+import {formatDay, formatTime} from '../time';
+import FeedingSourceSelector from './FeedingSourceSelector';
 
 const useStyles = makeStyles((theme) =>
   createStyles({
@@ -143,19 +144,16 @@ function EntryForm({match, data}) {
     })
   }
 
-  const updateBreastFeedingSource = (event, source) => {
-    setBreastFeedingSource(source)
-    updateEntry({
-      source
-    })
-  }
-
   const updateVitamin = (event, newVitamin) => {
     setVitamin(newVitamin === "1")
 
     updateEntry({
       vitamin: newVitamin === "1"
     })
+  }
+
+  const breastFeedingSourceChanged = (source) => {
+    setBreastFeedingSource(source)
   }
 
   const classes = useStyles()
@@ -260,12 +258,11 @@ function EntryForm({match, data}) {
                   Breast feeding source
                 </Typography>
 
-                <ToggleButtonGroup value={breastFeedingSource} exclusive onChange={updateBreastFeedingSource}>
-                  <ToggleButton value="left">Left</ToggleButton>
-                  <ToggleButton value="right">Right</ToggleButton>
-                  <ToggleButton value="both">Both</ToggleButton>
-                  <ToggleButton value="none">None</ToggleButton>
-                </ToggleButtonGroup>
+                <FeedingSourceSelector
+                  id={id}
+                  breastFeedingSource={breastFeedingSource}
+                  onChange={breastFeedingSourceChanged}
+                />
               </Paper>
             </Grid>
 

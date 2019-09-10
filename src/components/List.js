@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { useQuery, useMutation } from 'react-apollo-hooks'
 
 import AddIcon from '@material-ui/icons/Add'
@@ -19,6 +19,7 @@ import ShowError from './ShowError'
 import GrouppedList from './GrouppedList'
 import TimeSinceLastFeeding from './TimeSinceLastFeeding'
 import Layout from './Layout'
+import FeedingSourceBar from './FeedingSourceBar'
 
 import startOfDay from 'date-fns/startOfDay'
 import addMinutes from 'date-fns/addMinutes'
@@ -111,7 +112,10 @@ function EntryList({match, showNextEstimatedFeeding}) {
     return acc
   }, {})
 
-  const onAddEntry = () => createEntry({ variables: { time: Math.round(Date.now() / 1000), spaceId}})
+  const onAddEntry = () => {
+
+    return createEntry({ variables: { time: Math.round(Date.now() / 1000), spaceId}})
+  }
 
   return (
     <Layout>
@@ -126,7 +130,12 @@ function EntryList({match, showNextEstimatedFeeding}) {
         { !loading && data && lastFeedingDate > 0 &&
           <TimeSinceLastFeeding lastFeedingTime={lastFeedingDate.getTime()} nextFeedingTime={nextFeedingDate.getTime()}/>
         }
-
+        
+        { !loading && data && data.entries.length > 0 && data.entries[0].source === null &&
+          <FeedingSourceBar
+            id={data.entries[0].id}
+          />
+        }
         {!loading && !error &&
         <Paper>
           { !loading && data && data.entries.length > 0 &&

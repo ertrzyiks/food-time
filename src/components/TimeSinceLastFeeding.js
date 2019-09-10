@@ -52,8 +52,6 @@ const SnackbarContentWrapper = (props) => {
   );
 }
 
-
-
 const TimeSinceLastFeeding = ({lastFeedingTime, nextFeedingTime}) => {
   let [count, setCount] = useState(0);
 
