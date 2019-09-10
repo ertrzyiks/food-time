@@ -7,6 +7,7 @@ import SpaceSelector from './components/SpaceSelector'
 import SignInForm from './components/SignInForm'
 import EntryPage from './components/EntryPage'
 import NotFound from './components/NotFound'
+import ScrollToTop from './components/ScrollToTop'
 import ProfileContext from './ProfileContext'
 import getClient from './client'
 import './App.css'
@@ -34,6 +35,8 @@ function App({storage}) {
     <ProfileContext.Provider value={user && user.profileObj}>
       <div className='App'>
         <HashRouter>
+          <ScrollToTop />
+
           <Switch>
             {
               user ?
