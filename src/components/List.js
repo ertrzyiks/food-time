@@ -40,6 +40,22 @@ const useStyles = makeStyles(theme => ({
   }
 }))
 
+function getLastFeedingDate(entries) {
+  if (!entries || entries.length < 1) return null
+
+  const theMostRecent = entries[0]
+  return new Date(theMostRecent.time * 1000)
+}
+
+function getNextEntryDate(theMostRecentDate) {
+  if (!theMostRecentDate) return null
+
+  const hours = theMostRecentDate.getHours()
+  const isLate = (hours >= 21 || hours < 3)
+  const nextEntryInMinutes = isLate ? 210 : 150
+
+  return addMinutes(theMostRecentDate, nextEntryInMinutes)
+}
 
 function EntryList({match, showNextEstimatedFeeding}) {
   const classes = useStyles()
@@ -74,16 +90,14 @@ function EntryList({match, showNextEstimatedFeeding}) {
     }
   }, []).reverse()
 
-  if (showNextEstimatedFeeding && entries.length > 0) {
-    const theMostRecent = entries[0]
-    const theMostRecentDate = new Date(theMostRecent.time * 1000)
-    const hours = theMostRecentDate.getHours()
-    const isLate = (hours >= 21 || hours < 3)
-    const nextEntryInMinutes = isLate ? 210 : 150
 
+  const lastFeedingDate = getLastFeedingDate(entries)
+  const nextFeedingDate = getNextEntryDate(lastFeedingDate)
+
+  if (showNextEstimatedFeeding && nextFeedingDate) {
     entries.unshift({
       id: 'future',
-      time: Math.round(addMinutes(theMostRecentDate, nextEntryInMinutes) / 1000),
+      time: Math.round(nextFeedingDate.getTime() / 1000),
       extra_food: 0,
       meantime: null,
       isSuggested: true
@@ -109,8 +123,8 @@ function EntryList({match, showNextEstimatedFeeding}) {
           New feeding
         </Fab>
 
-        { !loading && data && data.entries.length > 0 &&
-          <TimeSinceLastFeeding lastFeedingTime={entries[1].time * 1000} nextFeedingTime={entries[0].time * 1000}/>
+        { !loading && data && lastFeedingDate > 0 &&
+          <TimeSinceLastFeeding lastFeedingTime={lastFeedingDate.getTime()} nextFeedingTime={nextFeedingDate.getTime()}/>
         }
 
         {!loading && !error &&
