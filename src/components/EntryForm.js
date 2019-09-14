@@ -162,6 +162,18 @@ function EntryForm({match, data}) {
     return <Redirect to={SpacePage.path({id: spaceId})}/>
   }
 
+  const feedingSourceComponent = !isBottleOnly
+    ? <Grid item xs={12} md={12}>
+      <Paper className={classes.root}>
+        <FeedingSourceSelector
+          id={id}
+          breastFeedingSource={breastFeedingSource}
+          onChange={breastFeedingSourceChanged}
+        />
+      </Paper>
+    </Grid>
+    : null
+
   return (
      <>
        <header className="App-header">
@@ -252,19 +264,7 @@ function EntryForm({match, data}) {
               </Paper>
             </Grid>
 
-            <Grid item xs={12} md={12}>
-              <Paper className={classes.root}>
-                <Typography paragraph>
-                  Breast feeding source
-                </Typography>
-
-                <FeedingSourceSelector
-                  id={id}
-                  breastFeedingSource={breastFeedingSource}
-                  onChange={breastFeedingSourceChanged}
-                />
-              </Paper>
-            </Grid>
+            {feedingSourceComponent}
 
             <Grid item xs={12} md={12}>
               <Paper className={classes.root}>

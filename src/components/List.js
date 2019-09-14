@@ -131,7 +131,7 @@ function EntryList({match, showNextEstimatedFeeding}) {
           <TimeSinceLastFeeding lastFeedingTime={lastFeedingDate.getTime()} nextFeedingTime={nextFeedingDate.getTime()}/>
         }
         
-        { !loading && data && data.entries.length > 0 && data.entries[0].source === null &&
+        { !loading && data && data.entries.length > 0 && data.entries[0].source === null && data.entries[0].type !== 'bottle' &&
           <FeedingSourceBar
             id={data.entries[0].id}
           />

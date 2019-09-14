@@ -93,7 +93,7 @@ const GrouppedList = ({groupedEntries}) => {
                         {formatTime(time * 1000)}
                       </ListItemText>
                       <ListItemText className={[classes.source_column, classes.narrow_column].join(' ')}>
-                        {breastFeedingSourceMap[source]}
+                        {type !== 'bottle' ? breastFeedingSourceMap[source] : null}
                       </ListItemText>
                       <ListItemText className={[classes.vitamin_column, classes.narrow_column].join(' ')}>
                         {vitamin ? 'Vit D3' : ''}
