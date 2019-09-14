@@ -88,6 +88,7 @@ function EntryForm({match, data}) {
   const [isBottleOnly, setIsBottleOnly] = useState(data.entry.type === 'bottle')
   const [breastFeedingSource, setBreastFeedingSource] = useState(data.entry.source)
   const [vitamin, setVitamin] = useState(data.entry.vitamin)
+  const [feedingDuration, setFeedingDuration] = useState(data.entry.feeding_duration)
 
   const client = useApolloClient()
 
@@ -162,6 +163,14 @@ function EntryForm({match, data}) {
     return <Redirect to={SpacePage.path({id: spaceId})}/>
   }
 
+  const updateFeedingDuration = (value) => {
+    setFeedingDuration(value)
+
+    updateEntry({
+      feeding_duration: value
+    })
+  }
+
   const feedingSourceComponent = !isBottleOnly
     ? <Grid item xs={12} md={12}>
       <Paper className={classes.root}>
@@ -169,6 +178,25 @@ function EntryForm({match, data}) {
           id={id}
           breastFeedingSource={breastFeedingSource}
           onChange={breastFeedingSourceChanged}
+        />
+      </Paper>
+    </Grid>
+    : null
+
+  const feedingDurationComponent = !isBottleOnly
+    ? <Grid item xs={12} md={12}>
+      <Paper className={classes.root}>
+        <Typography paragraph>
+          Feeding duration - {feedingDuration}min
+        </Typography>
+        <Slider
+          defaultValue={feedingDuration}
+          valueLabelDisplay="auto"
+          step={1}
+          marks
+          min={0}
+          max={30}
+          onChange={(e, value) => updateFeedingDuration(value)}
         />
       </Paper>
     </Grid>
@@ -239,7 +267,6 @@ function EntryForm({match, data}) {
 
                 <Slider
                   defaultValue={extraFood}
-                  aria-labelledby='discrete-slider'
                   valueLabelDisplay='off'
                   step={5}
                   min={0}
@@ -265,6 +292,8 @@ function EntryForm({match, data}) {
             </Grid>
 
             {feedingSourceComponent}
+
+            {feedingDurationComponent}
 
             <Grid item xs={12} md={12}>
               <Paper className={classes.root}>

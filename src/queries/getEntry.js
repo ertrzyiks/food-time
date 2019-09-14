@@ -9,7 +9,8 @@ export const GET_ENTRY = gql`
       spaceId
       type 
       vitamin
-      source  
+      source
+      feeding_duration
     }
   }
 `
