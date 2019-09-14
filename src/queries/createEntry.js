@@ -9,6 +9,7 @@ export const CREATE_ENTRY = gql`
       type  
       vitamin
       source
+      feeding_duration
     }
   }
 `

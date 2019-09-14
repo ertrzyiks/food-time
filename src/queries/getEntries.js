@@ -10,6 +10,7 @@ export const GET_ENTRIES = gql`
       type  
       vitamin
       source
+      feeding_duration
     }
   }
 `

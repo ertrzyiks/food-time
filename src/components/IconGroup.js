@@ -9,7 +9,8 @@ const useIconStyles = makeStyles({
     display: 'flex',
     flexDirection: 'column',
     fontSize: 12,
-    marginRight: 5
+    marginRight: 5,
+    textAlign: 'center'
   },
   bottle_icon: {
     color: '#24a0ff'
@@ -22,14 +23,21 @@ const useIconStyles = makeStyles({
   }
 })
 
-const IconGroup = ({ type, extra_food }) => {
+const IconGroup = ({ type, extra_food, feeding_duration }) => {
   const classes = useIconStyles()
+
+  const feedingDurationText = feeding_duration
+    ? <span>{feeding_duration}'</span>
+    : null
 
   let icons;
   switch (type) {
     case 'breast':
       icons = (
-        <BreastFeedingIcon/>
+        <>
+          <BreastFeedingIcon/>
+          {feedingDurationText}
+        </>
       )
       break;
     case 'bottle':
@@ -47,6 +55,7 @@ const IconGroup = ({ type, extra_food }) => {
             <BottleFeedingIcon className={[classes.bottle_icon, classes.small_icon].join(' ')}/>
           </div>
           <span>{extra_food}ml</span>
+          {feedingDurationText}
         </>
       )
       break;

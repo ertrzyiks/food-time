@@ -83,11 +83,11 @@ const GrouppedList = ({groupedEntries}) => {
                 <span className={classes.subheader_total}>(total {getTotalEntries(group)})</span>
               </ListSubheader>
 
-              {group.map(({id, time, extra_food, type, vitamin, meantime, source, isSuggested}) => {
+              {group.map(({id, time, extra_food, type, vitamin, meantime, source, feeding_duration, isSuggested}) => {
                   return isSuggested
                     ? <SuggestedListItem key={id} time={time} className={classes.item}/>
                     : <ListItem key={id}>
-                      <IconGroup type={type} extra_food={extra_food}/>
+                      <IconGroup type={type} extra_food={extra_food} feeding_duration={feeding_duration}/>
 
                       <ListItemText secondary={meantime} className={classes.narrow_column}>
                         {formatTime(time * 1000)}
