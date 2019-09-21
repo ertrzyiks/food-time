@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { useQuery, useMutation } from 'react-apollo-hooks'
 
 import AddIcon from '@material-ui/icons/Add'
@@ -10,7 +10,7 @@ import {
   List,
   ListItem,
   ListItemText,
-  Fab
+  Fab,
 } from '@material-ui/core'
 
 import { makeStyles } from '@material-ui/core/styles'
@@ -128,7 +128,11 @@ function EntryList({match, showNextEstimatedFeeding}) {
         </Fab>
 
         { !loading && data && lastFeedingDate > 0 &&
-          <TimeSinceLastFeeding lastFeedingTime={lastFeedingDate.getTime()} nextFeedingTime={nextFeedingDate.getTime()}/>
+          <TimeSinceLastFeeding
+            lastFeedingTime={lastFeedingDate.getTime()}
+            nextFeedingTime={nextFeedingDate.getTime()}
+            entry={entries && entries.length > 0 ? entries[0] : null}
+          />
         }
         
         { !loading && data && data.entries.length > 0 && data.entries[0].source === null && data.entries[0].type !== 'bottle' &&
