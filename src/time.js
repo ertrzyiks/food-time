@@ -6,6 +6,14 @@ export function formatTime (timestamp) {
   return format(new Date(timestamp), 'HH:mm')
 }
 
+export function getHours(timestamp) {
+  return format(new Date(timestamp), 'HH')
+}
+
+export function getMinutes(timestamp) {
+  return format(new Date(timestamp), 'mm')
+}
+
 export function formatDay(timestamp) {
   return format(new Date(timestamp), 'd MMM, yyyy')
 }

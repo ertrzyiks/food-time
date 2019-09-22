@@ -11,7 +11,6 @@ import { Redirect } from 'react-router-dom'
 import {
   Button,
   Container,
-  Fab,
   Paper,
   Typography,
   Grid,
@@ -21,8 +20,9 @@ import {
 import { ToggleButton, ToggleButtonGroup } from '@material-ui/lab';
 
 import { useMutation, useApolloClient } from 'react-apollo-hooks'
-import AddIcon from '@material-ui/icons/Add'
-import RemoveIcon from '@material-ui/icons/Remove'
+import ArrowUp from '@material-ui/icons/KeyboardArrowUp'
+import ArrowDown from '@material-ui/icons/KeyboardArrowDown'
+
 import FormControlLabel from '@material-ui/core/FormControlLabel'
 import Checkbox from '@material-ui/core/Checkbox'
 import { createStyles, makeStyles } from '@material-ui/core/styles'
@@ -35,7 +35,7 @@ import {
   UPDATE_ENTRY,
   REMOVE_ENTRY
 } from '../queries'
-import {formatDay, formatTime} from '../time';
+import {formatDay, getHours, getMinutes} from '../time';
 import FeedingSourceSelector from './FeedingSourceSelector';
 
 const useStyles = makeStyles((theme) =>
@@ -43,6 +43,22 @@ const useStyles = makeStyles((theme) =>
     root: {
       padding: theme.spacing(3, 5),
     },
+    dateTime: {
+      display: 'flex',
+      flexDirection: 'column',
+    },
+    date: {
+      marginLeft: 20
+    },
+    arrow: {
+      color: '#808edc',
+      minWidth: 'initial'
+    },
+    dateTimeBar: {
+      display: 'flex',
+      flexDirection: 'row',
+      padding: 10
+    }
   }),
 )
 
@@ -203,62 +219,47 @@ function EntryForm({match, data}) {
     : null
 
   return (
-     <>
-       <header className="App-header">
-         <Typography variant='h5'>
-           {formatTime(date)} {formatDay(date)}
-         </Typography>
-       </header>
+     <header>
+       <div className={["App-header", classes.dateTimeBar].join(' ')}>
+         <div className={classes.dateTime}>
+           <Button className={classes.arrow} onClick={() => updateDate(addHours(date, 1))}>
+             <ArrowUp/>
+           </Button>
+           <Typography variant='h5'>
+             <span>{getHours(date)}</span>
+           </Typography>
+           <Button className={classes.arrow}  onClick={() => updateDate(subHours(date, 1))}>
+             <ArrowDown/>
+           </Button>
+         </div>
+          :
+         <div className={classes.dateTime}>
+           <Button className={classes.arrow} onClick={() => updateDate(addMinutes(date, 5))}>
+             <ArrowUp/>
+           </Button>
+           <Typography variant='h5'>
+             <span>{getMinutes(date)}</span>
+           </Typography>
+           <Button className={classes.arrow} onClick={() => updateDate(subMinutes(date, 5))}>
+             <ArrowDown/>
+           </Button>
+         </div>
+         <div className={[classes.dateTime, classes.date].join(' ')}>
+           <Button className={classes.arrow} onClick={() => updateDate(addDays(date, 1))}>
+             <ArrowUp/>
+           </Button>
+           <Typography variant='h6'>
+             <span>{formatDay(date)}</span>
+           </Typography>
+           <Button className={classes.arrow} onClick={() => updateDate(subDays(date, 1))}>
+             <ArrowDown/>
+           </Button>
+         </div>
+        </div>
 
        <Container maxWidth="sm">
+
           <Grid container spacing={2} direction='row' justify='center'>
-            <Grid item xs={12} md={4}>
-              <Paper className={classes.root}>
-                <Typography paragraph>
-                  Day
-                </Typography>
-
-                <Fab color="primary" aria-label="Add" size='small' onClick={() => updateDate(addDays(date, 1))}>
-                  <AddIcon />
-                </Fab>
-                <Fab color="primary" aria-label="Remove" size='small' onClick={() => updateDate(subDays(date, 1))}>
-                  <RemoveIcon />
-                </Fab>
-              </Paper>
-            </Grid>
-
-            <Grid item xs={12} md={4}>
-              <Paper className={classes.root}>
-                <Typography paragraph>
-                  Hours
-                </Typography>
-
-                <Fab color="primary" aria-label="Add" size='small' onClick={() => updateDate(addHours(date, 1))}>
-                  <AddIcon />
-                </Fab>
-
-                <Fab color="primary" aria-label="Remove" size='small' onClick={() => updateDate(subHours(date, 1))}>
-                  <RemoveIcon />
-                </Fab>
-              </Paper>
-            </Grid>
-
-            <Grid item xs={12} md={4}>
-              <Paper className={classes.root}>
-                <Typography paragraph>
-                  Minutes
-                </Typography>
-
-                <Fab color="primary" aria-label="Add" size='small' onClick={() => updateDate(addMinutes(date, 5))}>
-                  <AddIcon />
-                </Fab>
-
-                <Fab color="primary" aria-label="Remove" size='small' onClick={() => updateDate(subMinutes(date, 5))}>
-                  <RemoveIcon />
-                </Fab>
-              </Paper>
-            </Grid>
-
             <Grid item xs={12} md={12}>
               <Paper className={classes.root}>
                 <Typography paragraph>
@@ -319,7 +320,7 @@ function EntryForm({match, data}) {
             </Grid>
           </Grid>
        </Container>
-      </>
+      </header>
   )
 }
 

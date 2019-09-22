@@ -149,7 +149,7 @@ function EntryList({match, showNextEstimatedFeeding}) {
           { !loading && data && data.entries.length === 0 &&
           <List>
             <ListItem>
-              <ListItemText primary='Click the button to start measuring intervals' />
+              <ListItemText primary="Click the button 'New feeding' to start measuring intervals" />
             </ListItem>
           </List>
           }
