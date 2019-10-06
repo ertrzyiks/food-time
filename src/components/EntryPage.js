@@ -8,7 +8,7 @@ import {
 } from '@material-ui/core'
 
 
-import { useQuery } from 'react-apollo-hooks'
+import { useQuery } from '@apollo/react-hooks'
 import ArrowBackIcon from '@material-ui/icons/ArrowBack'
 import Layout from './Layout'
 import EntryForm from './EntryForm'

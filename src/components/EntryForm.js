@@ -19,7 +19,7 @@ import {
 
 import { ToggleButton, ToggleButtonGroup } from '@material-ui/lab';
 
-import { useMutation, useApolloClient } from 'react-apollo-hooks'
+import { useMutation, useApolloClient } from '@apollo/react-hooks'
 import ArrowUp from '@material-ui/icons/KeyboardArrowUp'
 import ArrowDown from '@material-ui/icons/KeyboardArrowDown'
 

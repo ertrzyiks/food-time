@@ -3,7 +3,7 @@ import { ToggleButton, ToggleButtonGroup } from '@material-ui/lab';
 import {Typography} from '@material-ui/core'
 
 import {UPDATE_ENTRY} from '../queries'
-import {useMutation} from 'react-apollo-hooks'
+import {useMutation} from '@apollo/react-hooks'
 
 const FeedingSourceSelector = ({ id, breastFeedingSource, onChange }) => {
   const [updateEntry] = useMutation(UPDATE_ENTRY)

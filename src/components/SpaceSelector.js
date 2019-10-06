@@ -18,7 +18,7 @@ import Layout from './Layout'
 import { SpacePage } from '../routing'
 
 import { GET_SPACES, CREATE_SPACE } from '../queries'
-import { useQuery, useMutation } from 'react-apollo-hooks'
+import { useQuery, useMutation } from '@apollo/react-hooks'
 import {makeStyles} from '@material-ui/core/styles'
 
 const useStyles = makeStyles(theme => ({

@@ -8,7 +8,7 @@ import differenceInMinutes from 'date-fns/differenceInMinutes'
 import {formatElapsedTime} from '../time'
 import {useInterval} from '../useInterval'
 import {UPDATE_ENTRY} from '../queries'
-import {useMutation} from 'react-apollo-hooks'
+import {useMutation} from '@apollo/react-hooks'
 
 const useStyles = makeStyles(theme => ({
   info: {

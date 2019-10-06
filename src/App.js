@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { HashRouter, Route, Redirect, Switch } from 'react-router-dom'
-import { ApolloProvider } from 'react-apollo-hooks'
+import { ApolloProvider } from '@apollo/react-hooks'
 
-import EntryList from './components/List'
+import Space from './components/SpacePage'
 import SpaceSelector from './components/SpaceSelector'
 import SignInForm from './components/SignInForm'
 import EntryPage from './components/EntryPage'
@@ -47,7 +47,7 @@ function App({storage}) {
                     <Route path={SpacePage.pattern} render={
                       props =>
                         <RememberSpace write={id => write(storageKey, id)} match={props.match}>
-                          <EntryList {...props} profile={user.profileObj} showNextEstimatedFeeding={false} />
+                          <Space {...props} />
                         </RememberSpace>}
                     />
                     <Route path={EditPage.pattern} render={props => <EntryPage {...props} />} />

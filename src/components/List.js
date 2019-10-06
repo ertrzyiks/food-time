@@ -1,5 +1,5 @@
 import React from 'react'
-import { useQuery, useMutation } from 'react-apollo-hooks'
+import { useQuery, useMutation } from '@apollo/react-hooks'
 
 import AddIcon from '@material-ui/icons/Add'
 
@@ -18,7 +18,6 @@ import { makeStyles } from '@material-ui/core/styles'
 import ShowError from './ShowError'
 import GrouppedList from './GrouppedList'
 import TimeSinceLastFeeding from './TimeSinceLastFeeding'
-import Layout from './Layout'
 import FeedingSourceBar from './FeedingSourceBar'
 
 import startOfDay from 'date-fns/startOfDay'
@@ -118,7 +117,7 @@ function EntryList({match, showNextEstimatedFeeding}) {
   }
 
   return (
-    <Layout>
+    <>
       { (error || creationError) && <ShowError message={error || creationError} /> }
 
       <Container className={classes.listWrapper} maxWidth="sm">
@@ -134,7 +133,7 @@ function EntryList({match, showNextEstimatedFeeding}) {
             entry={entries && entries.length > 0 ? entries[0] : null}
           />
         }
-        
+
         { !loading && data && data.entries.length > 0 && data.entries[0].source === null && data.entries[0].type !== 'bottle' &&
           <FeedingSourceBar
             id={data.entries[0].id}
@@ -158,7 +157,7 @@ function EntryList({match, showNextEstimatedFeeding}) {
         }
         { loading && <CircularProgress /> }
       </Container>
-    </Layout>
+    </>
   )
 }
 
