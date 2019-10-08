@@ -292,9 +292,9 @@ function EntryForm({match, data}) {
               </Paper>
             </Grid>
 
-            {feedingSourceComponent}
-
             {feedingDurationComponent}
+
+            {feedingSourceComponent}
 
             <Grid item xs={12} md={12}>
               <Paper className={classes.root}>

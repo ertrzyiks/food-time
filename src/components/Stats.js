@@ -4,8 +4,18 @@ import { CircularProgress } from '@material-ui/core'
 
 import Chart from './Chart'
 import { GET_STATS } from '../queries'
+import {makeStyles} from "@material-ui/core/styles/index";
+
+const useStyles = makeStyles(theme => ({
+  chartLine: {
+    stroke: '#3f51b5',
+    fill: '#7f95fa'
+  }
+}))
 
 const Stats = ({spaceId}) => {
+  const classes = useStyles()
+
   const {loading, data: statsData} = useQuery(GET_STATS, {
     fetchPolicy: 'cache-and-network',
     variables: {
@@ -17,11 +27,22 @@ const Stats = ({spaceId}) => {
     return <div><CircularProgress/></div>
   }
 
-  const data = {
+  const extraFoodData = {
     labels: statsData.stats.extra_food_per_day.map(({date}) => date),
     series: [
       {
-        data: statsData.stats.extra_food_per_day.map(({extra_food}) => extra_food)
+        data: statsData.stats.extra_food_per_day.map(({extra_food}) => extra_food),
+        className: classes.chartLine
+      }
+    ]
+  }
+
+  const feedingCountData = {
+    labels: statsData.stats.feeding_count_per_day.map(({date}) => date),
+    series: [
+      {
+        data: statsData.stats.feeding_count_per_day.map(({feeding_count}) => feeding_count),
+        className: classes.chartLine
       }
     ]
   }
@@ -33,17 +54,17 @@ const Stats = ({spaceId}) => {
     return ''
   }
 
-  const options = {
+  const getOptions = (yUnit) =>  ({
     showArea: true,
     showPoint: false,
     low: 0,
     axisY: {
-      labelInterpolationFnc: (value) => `${value}ml`
+      labelInterpolationFnc: (value) => `${value}${yUnit}`
     },
     axisX: {
       labelInterpolationFnc: showNthLabel(7)
     }
-  }
+  })
 
   const responsiveOptions = [
     ['screen and (min-width: 640px)', {
@@ -59,7 +80,16 @@ const Stats = ({spaceId}) => {
     <div style={{height: 30}}>
       { loading && <CircularProgress size={20}/> }
     </div>
-    <Chart data={data} options={options} responsiveOptions={responsiveOptions}/>
+    <Chart
+      data={extraFoodData}
+      title='Extra food'
+      options={getOptions('ml')}
+      responsiveOptions={responsiveOptions}/>
+    <Chart
+      data={feedingCountData}
+      title='Feeding count'
+      options={getOptions('')}
+      responsiveOptions={responsiveOptions}/>
   </div>
 }
 

@@ -7,6 +7,11 @@ export const GET_STATS = gql`
         date
         extra_food
       }
+        
+      feeding_count_per_day {
+        date
+        feeding_count
+      }
     }
   }
 `
