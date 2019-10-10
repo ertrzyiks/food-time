@@ -12,6 +12,12 @@ export const GET_STATS = gql`
         date
         feeding_count
       }
+        
+      night_breaks {
+        date
+        firstBreakDurationInMins
+        secondBreakDurationInMins
+      }
     }
   }
 `

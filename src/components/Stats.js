@@ -4,19 +4,24 @@ import { CircularProgress } from '@material-ui/core'
 
 import Chart from './Chart'
 import { GET_STATS } from '../queries'
-import {makeStyles} from "@material-ui/core/styles/index";
+import {makeStyles} from '@material-ui/core/styles/index';
+import { formatTime } from '../time';
 
 const useStyles = makeStyles(theme => ({
-  chartLine: {
+  primaryChartLine: {
     stroke: '#3f51b5',
-    fill: '#7f95fa'
+    fill: '#7986cb'
+  },
+  secondaryChartLine: {
+    stroke: '#e91e63',
+    fill: '#f06292'
   }
 }))
 
 const Stats = ({spaceId}) => {
   const classes = useStyles()
 
-  const {loading, data: statsData} = useQuery(GET_STATS, {
+  const {loading, data: statsData, error} = useQuery(GET_STATS, {
     fetchPolicy: 'cache-and-network',
     variables: {
       spaceId
@@ -32,7 +37,7 @@ const Stats = ({spaceId}) => {
     series: [
       {
         data: statsData.stats.extra_food_per_day.map(({extra_food}) => extra_food),
-        className: classes.chartLine
+        className: classes.primaryChartLine
       }
     ]
   }
@@ -42,8 +47,24 @@ const Stats = ({spaceId}) => {
     series: [
       {
         data: statsData.stats.feeding_count_per_day.map(({feeding_count}) => feeding_count),
-        className: classes.chartLine
+        className: classes.primaryChartLine
       }
+    ]
+  }
+
+  const getRoundedHoursFromMinutes = (mins) => (Math.round(mins/60 * 10) / 10).toFixed(2)
+
+  const nightBreaksData = {
+    labels: statsData.stats.night_breaks.map(({date}) => date),
+    series: [
+      {
+        data: statsData.stats.night_breaks.map(({firstBreakDurationInMins}) => getRoundedHoursFromMinutes(firstBreakDurationInMins)),
+        className: classes.primaryChartLine
+      },
+      {
+        data: statsData.stats.night_breaks.map(({secondBreakDurationInMins}) => getRoundedHoursFromMinutes(secondBreakDurationInMins)),
+        className: classes.secondaryChartLine
+      },
     ]
   }
 
@@ -59,11 +80,12 @@ const Stats = ({spaceId}) => {
     showPoint: false,
     low: 0,
     axisY: {
-      labelInterpolationFnc: (value) => `${value}${yUnit}`
+      labelInterpolationFnc:((value) => `${value}${yUnit}`),
+      onlyInteger: true
     },
     axisX: {
       labelInterpolationFnc: showNthLabel(7)
-    }
+    },
   })
 
   const responsiveOptions = [
@@ -89,6 +111,11 @@ const Stats = ({spaceId}) => {
       data={feedingCountData}
       title='Feeding count'
       options={getOptions('')}
+      responsiveOptions={responsiveOptions}/>
+    <Chart
+      data={nightBreaksData}
+      title='Night break duration'
+      options={getOptions('h')}
       responsiveOptions={responsiveOptions}/>
   </div>
 }
