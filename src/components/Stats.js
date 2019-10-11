@@ -67,6 +67,16 @@ const Stats = ({spaceId}) => {
     ]
   }
 
+  const avgDayBreakData = {
+    labels: statsData.stats.average_day_break.map(({date}) => date),
+    series: [
+      {
+        data: statsData.stats.average_day_break.map(({average_duration_mins}) => getRoundedHoursFromMinutes(average_duration_mins)),
+        className: classes.primaryChartLine
+      }
+    ]
+  }
+
   const showNthLabel = (n) => (value, index) => {
     if (index % n === 0) {
       return value.split('/').slice(0, 2).join('/')
@@ -116,6 +126,11 @@ const Stats = ({spaceId}) => {
       title='Night break duration'
       options={getOptions('h')}
       responsiveOptions={responsiveOptions}/>
+      <Chart
+        data={avgDayBreakData}
+        title='Average day break'
+        options={getOptions('h')}
+        responsiveOptions={responsiveOptions}/>
   </div>
 }
 

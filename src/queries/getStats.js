@@ -18,6 +18,11 @@ export const GET_STATS = gql`
         firstBreakDurationInMins
         secondBreakDurationInMins
       }
+
+      average_day_break {
+        date
+        average_duration_mins
+      }
     }
   }
 `
