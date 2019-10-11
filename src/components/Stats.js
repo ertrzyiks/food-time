@@ -5,7 +5,6 @@ import { CircularProgress } from '@material-ui/core'
 import Chart from './Chart'
 import { GET_STATS } from '../queries'
 import {makeStyles} from '@material-ui/core/styles/index';
-import { formatTime } from '../time';
 
 const useStyles = makeStyles(theme => ({
   primaryChartLine: {
@@ -69,7 +68,7 @@ const Stats = ({spaceId}) => {
   }
 
   const showNthLabel = (n) => (value, index) => {
-    if (index % n == 0) {
+    if (index % n === 0) {
       return value.split('/').slice(0, 2).join('/')
     }
     return ''

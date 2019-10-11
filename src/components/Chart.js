@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef } from 'react'
 import { Typography } from '@material-ui/core'
 import {makeStyles} from "@material-ui/core/styles/index";
 
@@ -15,17 +15,15 @@ const Chart = ({data, title, options, responsiveOptions}) => {
   const classes = useStyles()
 
   const chartRef = React.createRef()
-
-  const [chartist, setChartist] = useState(null)
+  const chartist = useRef(null)
 
   useEffect(() => {
-    chartist && chartist.detach()
-    setChartist(Chartist.Line(chartRef.current, data, options, responsiveOptions))
+    chartist.current && chartist.current.detach()
+    chartist.current = Chartist.Line(chartRef.current, data, options, responsiveOptions)
 
-    return () => chartist && chartist.detach()
-  }, [chartRef, data, options, responsiveOptions, chartist, setChartist])
+    return () => chartist && chartist.current.detach()
+  }, [chartist, chartRef, data, options, responsiveOptions])
 
-  chartist && chartist.update(data, options)
   return (
     <div className={classes.chartWrapper}>
       <Typography variant="h6">
