@@ -112,21 +112,25 @@ const Stats = ({spaceId}) => {
       { loading && <CircularProgress size={20}/> }
     </div>
     <Chart
+      type='line'
       data={extraFoodData}
       title='Extra food'
       options={getOptions('ml')}
       responsiveOptions={responsiveOptions}/>
     <Chart
+      type='line'
       data={feedingCountData}
       title='Feeding count'
       options={getOptions('')}
       responsiveOptions={responsiveOptions}/>
     <Chart
+      type='line'
       data={nightBreaksData}
       title='Night break duration'
       options={getOptions('h')}
       responsiveOptions={responsiveOptions}/>
       <Chart
+        type='line'
         data={avgDayBreakData}
         title='Average day break'
         options={getOptions('h')}

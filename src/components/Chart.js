@@ -11,7 +11,7 @@ const useStyles = makeStyles(theme => ({
   }
 }))
 
-const Chart = ({data, title, options, responsiveOptions}) => {
+const Chart = ({type, data, title, options, responsiveOptions}) => {
   const classes = useStyles()
 
   const chartRef = React.createRef()
@@ -19,7 +19,14 @@ const Chart = ({data, title, options, responsiveOptions}) => {
 
   useEffect(() => {
     chartist.current && chartist.current.detach()
-    chartist.current = Chartist.Line(chartRef.current, data, options, responsiveOptions)
+    switch(type) {
+      case 'line':
+        chartist.current = Chartist.Line(chartRef.current, data, options, responsiveOptions)
+        break
+      case 'bar':
+        chartist.current = Chartist.Bar(chartRef.current, data, options, responsiveOptions)
+        break
+    }
 
     return () => chartist && chartist.current.detach()
   }, [chartist, chartRef, data, options, responsiveOptions])
