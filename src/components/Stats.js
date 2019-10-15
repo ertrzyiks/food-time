@@ -1,10 +1,16 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { useQuery } from '@apollo/react-hooks'
-import { CircularProgress } from '@material-ui/core'
+import {
+  CircularProgress,
+  Button,
+  Menu,
+  MenuItem
+} from '@material-ui/core'
 
 import Chart from './Chart'
 import { GET_STATS } from '../queries'
 import {makeStyles} from '@material-ui/core/styles/index';
+import ArrowDown from '@material-ui/icons/KeyboardArrowDown'
 
 const useStyles = makeStyles(theme => ({
   primaryChartLine: {
@@ -14,16 +20,37 @@ const useStyles = makeStyles(theme => ({
   secondaryChartLine: {
     stroke: '#e91e63',
     fill: '#f06292'
+  },
+  menu: {
+    textAlign: 'right',
+    margin: '20px 10px'
   }
 }))
 
 const Stats = ({spaceId}) => {
+  const [anchorEl, setAnchorEl] = useState(null)
+  const [chartTimePeriod, setChartTimePeriod] = useState(null);
+
   const classes = useStyles()
+
+  const getIntChartTimePeriod = (stringTimePeriod) => {
+    switch (stringTimePeriod) {
+      case 'week':
+        return 7
+      case 'month':
+        return 30
+      case 'quarter':
+        return 90
+      default:
+        return 30
+    }
+  }
 
   const {loading, data: statsData, error} = useQuery(GET_STATS, {
     fetchPolicy: 'cache-and-network',
     variables: {
-      spaceId
+      spaceId,
+      daysAgo: getIntChartTimePeriod(chartTimePeriod)
     }
   })
 
@@ -107,7 +134,37 @@ const Stats = ({spaceId}) => {
     }]
   ]
 
-  return <div>
+  const handleClick = (e) => {
+    setAnchorEl(e.currentTarget)
+  };
+
+  const handleClose = (e) => {
+    if (e) {
+      setChartTimePeriod(e);
+    }
+
+    setAnchorEl(null);
+  };
+
+  return (
+    <div>
+      <div className={classes.menu}>
+        <Button aria-controls="simple-menu" aria-haspopup="true" onClick={handleClick}>
+          Select dates
+          <ArrowDown/>
+        </Button>
+        <Menu
+          id="simple-menu"
+          anchorEl={anchorEl}
+          keepMounted
+          open={Boolean(anchorEl)}
+          onClose={handleClose}
+        >
+          <MenuItem onClick={handleClose.bind(this, 'week')}>Last week</MenuItem>
+          <MenuItem onClick={handleClose.bind(this, 'month')}>Last month</MenuItem>
+          <MenuItem onClick={handleClose.bind(this, 'quarter')}>Last quarter</MenuItem>
+        </Menu>
+      </div>
     <div style={{height: 30}}>
       { loading && <CircularProgress size={20}/> }
     </div>
@@ -136,6 +193,6 @@ const Stats = ({spaceId}) => {
         options={getOptions('h')}
         responsiveOptions={responsiveOptions}/>
   </div>
-}
+  )}
 
 export default Stats

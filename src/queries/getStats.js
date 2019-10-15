@@ -1,8 +1,8 @@
 import gql from "graphql-tag"
 
 export const GET_STATS = gql`
-  query getStats($spaceId: String!) {
-    stats(spaceId: $spaceId) {
+  query getStats($spaceId: String!, $daysAgo: Int!) {
+    stats(spaceId: $spaceId, daysAgo: $daysAgo) {
       extra_food_per_day {
         date
         extra_food
