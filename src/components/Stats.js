@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { useQuery } from '@apollo/react-hooks'
+import { useQuery, useLazyQuery } from '@apollo/react-hooks'
 import {
   CircularProgress,
   Button,
@@ -8,7 +8,7 @@ import {
 } from '@material-ui/core'
 
 import Chart from './Chart'
-import { GET_STATS } from '../queries'
+import { GET_DAY_STATS, GET_WEEK_STATS } from '../queries'
 import {makeStyles} from '@material-ui/core/styles/index';
 import ArrowDown from '@material-ui/icons/KeyboardArrowDown'
 
@@ -24,6 +24,13 @@ const useStyles = makeStyles(theme => ({
   menu: {
     textAlign: 'right',
     margin: '20px 10px'
+  },
+  loader: {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    marginLeft: '-20px',
+    marginTop: '-20px'
   }
 }))
 
@@ -46,13 +53,25 @@ const Stats = ({spaceId}) => {
     }
   }
 
-  const {loading, data: statsData, error} = useQuery(GET_STATS, {
+  const {loading, data: statsData, error} = useQuery(GET_DAY_STATS, {
     fetchPolicy: 'cache-and-network',
     variables: {
       spaceId,
       daysAgo: getIntChartTimePeriod(chartTimePeriod)
     }
   })
+
+  const [loadWeekStats, {loading: weekStatsLoading, data: weekStatsData, error: weekStatsError}] = useLazyQuery(GET_WEEK_STATS, {
+    fetchPolicy: 'cache-and-network',
+    variables: {
+      spaceId,
+      daysAgo: getIntChartTimePeriod(chartTimePeriod)
+    }
+  })
+
+  if (statsData && !weekStatsLoading && !weekStatsData) {
+    loadWeekStats()
+  }
 
   if (!statsData) {
     return <div><CircularProgress/></div>
@@ -80,29 +99,29 @@ const Stats = ({spaceId}) => {
 
   const getRoundedHoursFromMinutes = (mins) => (Math.round(mins/60 * 10) / 10).toFixed(2)
 
-  const nightBreaksData = {
-    labels: statsData.stats.night_breaks.map(({date}) => date),
+  const nightBreaksData = weekStatsData ? {
+    labels: weekStatsData.stats.night_breaks.map(({date}) => date),
     series: [
       {
-        data: statsData.stats.night_breaks.map(({firstBreakDurationInMins}) => getRoundedHoursFromMinutes(firstBreakDurationInMins)),
+        data: weekStatsData.stats.night_breaks.map(({firstBreakDurationInMins}) => getRoundedHoursFromMinutes(firstBreakDurationInMins)),
         className: classes.primaryChartLine
       },
       {
-        data: statsData.stats.night_breaks.map(({secondBreakDurationInMins}) => getRoundedHoursFromMinutes(secondBreakDurationInMins)),
+        data: weekStatsData.stats.night_breaks.map(({secondBreakDurationInMins}) => getRoundedHoursFromMinutes(secondBreakDurationInMins)),
         className: classes.secondaryChartLine
       },
     ]
-  }
+  } : null
 
-  const avgDayBreakData = {
-    labels: statsData.stats.average_day_break.map(({date}) => date),
+  const avgDayBreakData = weekStatsData ? {
+    labels: weekStatsData.stats.average_day_break.map(({date}) => date),
     series: [
       {
-        data: statsData.stats.average_day_break.map(({average_duration_mins}) => getRoundedHoursFromMinutes(average_duration_mins)),
+        data: weekStatsData.stats.average_day_break.map(({average_duration_mins}) => getRoundedHoursFromMinutes(average_duration_mins)),
         className: classes.primaryChartLine
       }
     ]
-  }
+  } : null
 
   const showNthLabel = (n) => (value, index) => {
     if (index % n === 0) {
@@ -180,19 +199,27 @@ const Stats = ({spaceId}) => {
       title='Feeding count'
       options={getOptions('')}
       responsiveOptions={responsiveOptions}/>
-    <Chart
-      type='line'
-      data={nightBreaksData}
-      title='Night break duration'
-      options={getOptions('h')}
-      responsiveOptions={responsiveOptions}/>
+
+     <div style={{position: 'relative'}}>
+      { !nightBreaksData && <CircularProgress className={classes.loader}/> }
       <Chart
         type='line'
-        data={avgDayBreakData}
-        title='Average day break'
+        data={nightBreaksData}
+        title='Night break duration'
         options={getOptions('h')}
         responsiveOptions={responsiveOptions}/>
-  </div>
+     </div>
+
+      <div style={{position: 'relative'}}>
+        { !avgDayBreakData && <CircularProgress className={classes.loader}/> }
+        <Chart
+          type='line'
+          data={avgDayBreakData}
+          title='Average day break'
+          options={getOptions('h')}
+          responsiveOptions={responsiveOptions}/>
+      </div>
+    </div>
   )}
 
 export default Stats
