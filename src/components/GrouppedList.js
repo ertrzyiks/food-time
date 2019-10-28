@@ -89,13 +89,13 @@ const GrouppedList = ({groupedEntries}) => {
                     : <ListItem key={id}>
                       <IconGroup type={type} extra_food={extra_food} feeding_duration={feeding_duration}/>
 
-                      <ListItemText secondary={meantime} className={classes.narrow_column}>
+                      <ListItemText primaryTypographyProps={{variant: 'body2'}} secondary={meantime} className={classes.narrow_column}>
                         {formatTime(time * 1000)}
                       </ListItemText>
                       <ListItemText className={[classes.source_column, classes.narrow_column].join(' ')}>
                         {type !== 'bottle' ? breastFeedingSourceMap[source] : null}
                       </ListItemText>
-                      <ListItemText className={[classes.vitamin_column, classes.narrow_column].join(' ')}>
+                      <ListItemText primaryTypographyProps={{variant: 'body2'}} className={[classes.vitamin_column, classes.narrow_column].join(' ')}>
                         {vitamin ? 'Vit D3' : ''}
                       </ListItemText>
                       <ListItemSecondaryAction>
