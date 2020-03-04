@@ -1,6 +1,6 @@
 self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
-    "revision": "f47936797646514c93d6991fbf3c7a3f",
+    "revision": "e5528cf5ff10f29bfb310be4ad12ffb3",
     "url": "/food-time/index.html"
   },
   {
@@ -8,7 +8,7 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/food-time/static/css/2.ab1425a7.chunk.css"
   },
   {
-    "revision": "6fea8b9821f4069a78e4",
+    "revision": "a14d683c3013a9e3cc74",
     "url": "/food-time/static/css/main.62559586.chunk.css"
   },
   {
@@ -16,8 +16,8 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/food-time/static/js/2.6cb32966.chunk.js"
   },
   {
-    "revision": "6fea8b9821f4069a78e4",
-    "url": "/food-time/static/js/main.e63fb69d.chunk.js"
+    "revision": "a14d683c3013a9e3cc74",
+    "url": "/food-time/static/js/main.dd8e5286.chunk.js"
   },
   {
     "revision": "ecb44f2abd6dd9f365b2",
