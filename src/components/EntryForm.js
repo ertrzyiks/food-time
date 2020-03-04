@@ -271,7 +271,7 @@ function EntryForm({match, data}) {
                   valueLabelDisplay='off'
                   step={5}
                   min={0}
-                  max={160}
+                  max={250}
                   onChange={(e, value) => updateExtraFood(value)}
                 />
               </Paper>
