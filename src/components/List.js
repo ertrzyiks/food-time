@@ -112,7 +112,6 @@ function EntryList({match, showNextEstimatedFeeding}) {
   }, {})
 
   const onAddEntry = () => {
-
     return createEntry({ variables: { time: Math.round(Date.now() / 1000), spaceId}})
   }
 

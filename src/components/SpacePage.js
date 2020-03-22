@@ -1,6 +1,7 @@
 import React from 'react'
 import { generatePath } from 'react-router-dom'
 import EntryList from './List'
+import ActivityLog from './ActivityLog'
 import Stats from './Stats'
 import AggregatedStats from './AggregatedStats'
 import {
@@ -22,12 +23,16 @@ const SpacePage = (props) => {
   return <Layout>
     <Tabs value={tab} onChange={navigateToTab}>
       <Tab value='list' label="List" />
+      <Tab value='log' label="Log" />
       <Tab value='stats' label="Stats"  />
       <Tab value='aggregated' label="Aggregated"  />
     </Tabs>
 
     {tab === 'list' &&
       <EntryList {...props} />
+    }
+    {tab === 'log' &&
+      <ActivityLog {...props} />
     }
     {tab === 'stats' &&
       <Stats spaceId={match.params.id} />
